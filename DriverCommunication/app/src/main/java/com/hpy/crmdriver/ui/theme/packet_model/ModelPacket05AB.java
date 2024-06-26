@@ -1,0 +1,111 @@
+package com.hpy.crmdriver.ui.theme.packet_model;
+
+import com.hpy.crmdriver.ui.theme.data.Packet;
+import com.hpy.crmdriver.ui.theme.data.Size;
+import com.hpy.crmdriver.ui.theme.other.DataPacket05AUnfitModel;
+import com.hpy.crmdriver.ui.theme.util.AppLogs;
+import com.hpy.crmdriver.ui.theme.util.StringHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ModelPacket05AB {
+
+    String packetId;
+    String length;
+    List<DataPacket05AUnfitModel> dataPacket05AUnfitModels;
+
+    public String getPacketId() {
+        return packetId;
+    }
+
+    public void setPacketId(String packetId) {
+        this.packetId = packetId;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+
+    public List<DataPacket05AUnfitModel> getDataPacket05AUnfitModels() {
+        return dataPacket05AUnfitModels;
+    }
+
+    public void setDataPacket05AUnfitModels(List<DataPacket05AUnfitModel> dataPacket05AUnfitModels) {
+        this.dataPacket05AUnfitModels = dataPacket05AUnfitModels;
+    }
+
+    public String generatePacket() {
+        String returnValue = "";
+        String packetData = packetId + length;
+        String messageData = "";
+        for (DataPacket05AUnfitModel model : dataPacket05AUnfitModels) {
+            messageData = messageData + model.getDenominationCode() + model.getDestination() + model.getNoOfUnfitNotes();
+        }
+        returnValue = packetData + messageData;
+        AppLogs.generate(returnValue);
+        return returnValue;
+    }
+
+    public String parsePacket(String responseData) {
+        String returnValue = "";
+        String value = responseData.replaceAll(" ", "");
+        StringHelper stringHelper = new StringHelper();
+        Packet packet = new Packet();
+        Size size = new Size();
+        List<DataPacket05AUnfitModel> list = new ArrayList<>();
+
+        AppLogs.generate(packet.PKT_05AB + " Response :  " + value);
+
+
+        //split string and user loop
+        //start loop
+        int startPos1 = size.SIZE_0;
+        int length1 = stringHelper.getMultiplyValue(size.SIZE_2);
+        String packetId = stringHelper.getSubstringData(value, startPos1, startPos1 + length1);
+
+        int startPos2 = startPos1 + length1;
+        int length2 = stringHelper.getMultiplyValue(size.SIZE_2);
+        String length = stringHelper.getSubstringData(value, startPos2, startPos2 + length2);
+
+        if (packetId.equalsIgnoreCase(packet.PKT_05AB)) {
+
+            int startPos3 = startPos2 + length2;
+            int length3 = stringHelper.getMultiplyValue(size.SIZE_1);
+            String denominationCode = stringHelper.getSubstringData(value, startPos3, startPos3 + length3);
+
+            int startPos4 = startPos3 + length3;
+            int length4 = stringHelper.getMultiplyValue(size.SIZE_1);
+            String destination = stringHelper.getSubstringData(value, startPos4, startPos4 + length4);
+
+            int startPos5 = startPos4 + length4;
+            int length5 = stringHelper.getMultiplyValue(size.SIZE_2);
+            String noOfNotes = stringHelper.getSubstringData(value, startPos5, startPos5 + length5);
+
+            DataPacket05AUnfitModel model = new DataPacket05AUnfitModel();
+            model.setDenominationCode(denominationCode);
+            model.setDestination(destination);
+            model.setNoOfUnfitNotes(noOfNotes);
+            list.add(model);
+            //end loop
+
+            //add data in main list
+            setPacketId(packetId);
+            setLength(length);
+            setDataPacket05AUnfitModels(list);
+
+            returnValue = "Packet Matched 05AB";
+
+        } else {
+            returnValue = "Packet Id Not Matched 05AB";
+        }
+
+        AppLogs.generate(returnValue);
+        return returnValue;
+    }
+
+}
