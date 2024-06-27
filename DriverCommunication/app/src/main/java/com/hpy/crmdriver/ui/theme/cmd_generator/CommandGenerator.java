@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.hpy.crmdriver.ui.theme.cmd_msg_data.Cancel;
@@ -48,7 +49,7 @@ public class CommandGenerator {
     public boolean isResponseReceived = false;
 
     public String generate(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
-        isResponseReceived = false;
+        clearData();
         clearCommandCounter();
         stringBuilder = new StringBuilder();
         String returnValue = "";
@@ -63,15 +64,31 @@ public class CommandGenerator {
 //            AppLogs.generate(message);
 //        }
 
-        message = "**** Start " + commandType + " Command ****";
+        message = "\n\n**** Start " + commandType + " Command ****";
         appendText(message, textView);
         AppLogs.generate(message);
         returnValue = getInputCommandValue(context, usbConnection, endpointOne, endpointTwo, commandType, textView);
-        message = "**** End " + commandType + " Command ****";
+        message = "**** End " + commandType + " Command ****\n\n";
         appendText(message, textView);
         AppLogs.generate(message);
-        AppLogs.generate(returnValue);
         return returnValue;
+    }
+
+    public void clearData() {
+        isResponseReceived = false;
+        commandSendingRequestCount = 0;
+        commandSendingConfirmationCount = 0;
+        responseReceiveRequestCount = 0;
+        responseReceiveConfirmationCount = 0;
+    }
+
+    public int getResponseLength(String input) {
+        int decimalValue = 0;
+        if (input.length() >= 4) {
+            String hexString = input.substring(input.length() - 4);
+            decimalValue = Integer.parseInt(hexString, 16);
+        }
+        return decimalValue;
     }
 
     public String getInputCommandValue(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
@@ -99,17 +116,18 @@ public class CommandGenerator {
         responseCode = cmdSupportClass.get3rdHexValue(commandSendingRequest);
         commandSendingRequestCount = commandSendingRequestCount + 1;
 
-        if (!TextUtils.isEmpty(responseCode) && responseCode.equals(cmdErrorCode.CODE_00)) {
+        if (!TextUtils.isEmpty(responseCode) && responseCode.equalsIgnoreCase(cmdErrorCode.CODE_00)) {
 
             //TODO - Check interrupt status (before fire command)
             interruptStatus = checkInterruptStatus(context, commandType);
 
             //TODO - Bulk-Out Request (Step 2)
-            boolean isBulkOutRequest = controlBulkCmdGenerator.bulkOutRequest(usbConnection, commandArray, endpointOne, textView, stringBuilder);
+            boolean isBulkOutRequest = controlBulkCmdGenerator.bulkOutRequest(usbConnection, commandArray, endpointOne, command,commandType, textView, stringBuilder);
 
             if (isBulkOutRequest) {
 
                 int length = 7;
+                outerLoop:
                 for (int i = 0; i < length; i++) {
 
                     //TODO - Stop command sending request once received final confirmation
@@ -126,29 +144,33 @@ public class CommandGenerator {
                     responseCode = cmdSupportClass.get3rdHexValue(commandSendingConfirmation);
                     commandSendingConfirmationCount = commandSendingConfirmationCount + 1;
 
-                    if (!TextUtils.isEmpty(responseCode) && responseCode.equals(cmdErrorCode.CODE_00)) {
+                    if (!TextUtils.isEmpty(responseCode) && responseCode.equalsIgnoreCase(cmdErrorCode.CODE_00)) {
 
                         int size = 4;
                         for (int j = 0; j < size; j++) {
 
+                            AppLogs.generate("ResponseReceiveRequestCount : " + responseReceiveRequestCount);
                             if (responseReceiveRequestCount <= 3) {
                                 //TODO - Check interrupt status (before fire command)
                                 interruptStatus = checkInterruptStatus(context, commandType);
 
                                 //TODO - Response Receiving Request (Step 4)
-                                String responseReceiveRequest = controlBulkCmdGenerator.responseReceiveRequest(context, usbConnection, textView, stringBuilder);
+                                String responseReceiveRequest = controlBulkCmdGenerator.responseReceiveRequest(context, usbConnection, responseReceiveRequestCount, textView, stringBuilder);
                                 appendText("Response Receiving Request (Output) : " + responseReceiveRequest, textView);
                                 responseCode = cmdSupportClass.get3rdHexValue(responseReceiveRequest);
 
-                                if (!TextUtils.isEmpty(responseCode) && responseCode.equals(cmdErrorCode.CODE_00)) {
+                                int datLength = getResponseLength(responseReceiveRequest.replace(" ", ""));
+
+                                if (!TextUtils.isEmpty(responseCode) && responseCode.equalsIgnoreCase(cmdErrorCode.CODE_00)) {
                                     responseReceiveRequestCount = responseReceiveRequestCount + 1;
 
                                     //TODO - Check interrupt status (before fire command)
                                     interruptStatus = checkInterruptStatus(context, commandType);
 
                                     //TODO - Bulk-In Request (Step 5)
-                                    String receivedBulInRequest = controlBulkCmdGenerator.receivedBulInRequest(context, usbConnection, endpointTwo);
+                                    String receivedBulInRequest = controlBulkCmdGenerator.receivedBulInRequest(context, usbConnection, endpointTwo, commandType, datLength);
                                     appendText("Bulk-In Request Response : " + receivedBulInRequest, textView);
+
                                     if (!TextUtils.isEmpty(receivedBulInRequest)) {
 
                                         //TODO - Check BCC (check for functionality and code)
@@ -160,29 +182,34 @@ public class CommandGenerator {
                                         interruptStatus = checkInterruptStatus(context, commandType);
 
                                         //TODO - Response Receiving Confirmation (Step 6)
-                                        String responseReceivedConformation = controlBulkCmdGenerator.responseReceivedConformation(context, usbConnection, textView, stringBuilder);
+                                        String responseReceivedConformation = controlBulkCmdGenerator.responseReceivedConformation(context, usbConnection, responseReceiveConfirmationCount, textView, stringBuilder);
                                         appendText("Response Receiving Confirmation (Output) : " + responseReceivedConformation, textView);
                                         responseCode = cmdSupportClass.get3rdHexValue(responseReceivedConformation);
                                         responseReceiveConfirmationCount = responseReceiveConfirmationCount + 1;
 
-                                        if (!TextUtils.isEmpty(responseCode) && responseCode.equals(cmdErrorCode.CODE_00)) {
+                                        AppLogs.generate("ResponseReceiveConfirmationCount : " + responseReceiveConfirmationCount);
+                                        AppLogs.generate("ResponseReceiveConfirmationCode : " + responseCode);
+
+                                        if (!TextUtils.isEmpty(responseCode) && responseCode.equalsIgnoreCase(cmdErrorCode.CODE_00)) {
                                             returnValue = getResponse(receivedBulInRequest);
                                             isResponseReceived = true;
-                                            break;
-                                        } else {
-                                            //TODO - Response Receiving Confirmation (Error Handling)
-                                            if (isErrorFound017E(responseCode)) {
-                                                if (responseReceiveConfirmationCount >= 3) {
-                                                    returnValue = returnError(responseCode);
-                                                    break;
-                                                }
-                                            } else if (isErrorFound80FF(responseCode)) {
-                                                returnValue = returnError(responseCode);
-                                                break;
+                                            break outerLoop;
+                                        }
+                                        //TODO - Response Receiving Confirmation (Error Handling)
+                                        else if (isErrorFound017E(responseCode)) {
+                                            if (responseReceiveConfirmationCount < 3) {
+                                                //TODO - Re-Check For Response Receiving Request
+                                                AppLogs.generate("Re-Checking For Response Receiving Request");
                                             } else {
                                                 returnValue = returnError(responseCode);
-                                                break;
+                                                break outerLoop;
                                             }
+                                        } else if (isErrorFound80FF(responseCode)) {
+                                            returnValue = returnError(responseCode);
+                                            break outerLoop;
+                                        } else {
+                                            returnValue = returnError(responseCode);
+                                            break outerLoop;
                                         }
 
                                     }
@@ -254,7 +281,7 @@ public class CommandGenerator {
 
         appendText("Error Reason: " + cmdSupportClass.getErrorReason(responseCode), textView);
 
-        AppLogs.generate(returnValue);
+//        AppLogs.generate(returnValue);
         return returnValue;
     }
 

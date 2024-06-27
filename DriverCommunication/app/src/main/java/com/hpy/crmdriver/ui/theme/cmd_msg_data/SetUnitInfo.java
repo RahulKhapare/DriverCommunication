@@ -23,10 +23,13 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0529;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0581;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0586;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppLogs;
+import com.hpy.crmdriver.ui.theme.util.DateCalculator;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class SetUnitInfo {
 
+    public DateCalculator dateCalculator = new DateCalculator();
     public ModelPacket0001 modelPacket0001 = new ModelPacket0001();
     public ModelPacket0010 modelPacket0010 = new ModelPacket0010();
     public ModelPacket0511 modelPacket0511 = new ModelPacket0511();
@@ -57,157 +60,192 @@ public class SetUnitInfo {
         modelPacket0001.setLength(length.LENGTH_0004);
         modelPacket0001.setCommand(commandData.CMD_0600);//check for value
 
-        String data_0010 = "18061A0D111E";
+//        String data_0010 = "18 06 1A 0D 11 1E".replace(" ", "");
+
+        String year = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getYear());
+        String month = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getMonth());
+        String day = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getDay());
+        String hour = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getHour());
+        String minutes = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getMinute());
+        String seconds = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getSecond());
+//        AppLogs.generate("year " + year + " month " + month + " day " + day + " hour " + hour + " minutes " + minutes + " seconds " + seconds);
+
         modelPacket0010.setPacketId(packet.PKT_0010);
         modelPacket0010.setLength(length.LENGTH_0008);
-        modelPacket0010.setYear("");//convert into hexadecimal
-        modelPacket0010.setMonth("");//convert into hexadecimal
-        modelPacket0010.setDay("");//convert into hexadecimal
-        modelPacket0010.setHour("");//convert into hexadecimal
-        modelPacket0010.setMinutes("");//convert into hexadecimal
-        modelPacket0010.setSeconds("");//convert into hexadecimal
-        modelPacket0010.setSeconds(data_0010);//convert into hexadecimal
+        modelPacket0010.setYear(year);
+        modelPacket0010.setMonth(month);
+        modelPacket0010.setDay(day);
+        modelPacket0010.setHour(hour);
+        modelPacket0010.setMinutes(minutes);
+        modelPacket0010.setSeconds(seconds);
 
-        String data_0511 = "0000000000FF";
+//        String data_0511 = "0000 000000FF".replace(" ", "");
         modelPacket0511.setPacketId(packet.PKT_0511);
         modelPacket0511.setLength(length.LENGTH_0008);
-        modelPacket0511.setStatus("");//0000/0001
-        modelPacket0511.setOperationalInfo("");
-        modelPacket0511.setOperationalInfo(data_0511);
+        modelPacket0511.setStatus("0000");
+        modelPacket0511.setOperationalInfo("000000FF");
 
-        String data_0510 = "000000000020000000008000000000000000";
+//        String data_0510 = "0000 00000020000000008000000000000000".replace(" ", "");
         modelPacket0510.setPacketId(packet.PKT_0510);
         modelPacket0510.setLength(length.LENGTH_0014);
-        modelPacket0510.setStatus("");
-        modelPacket0510.setOperationalInfo("");
-        modelPacket0510.setOperationalInfo(data_0510);
+        modelPacket0510.setStatus("0000");
+        modelPacket0510.setOperationalInfo("00000020000000008000000000000000");
 
-        String data_0512 = "000080091F00";
+//        String data_0512 = "0000 80091F00".replace(" ", "");
         modelPacket0512.setPacketId(packet.PKT_0512);
         modelPacket0512.setLength(length.LENGTH_0008);
-        modelPacket0512.setStatus("");
-        modelPacket0512.setHardwareConfig("");
-        modelPacket0512.setHardwareConfig(data_0512);
+        modelPacket0512.setStatus("0000");
+        modelPacket0512.setHardwareConfig("80091F00");
 
-        String data_0515 = "00000000000000000000000000000000000180000000000000000000000000000000000800000000000000000000000000000800000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+//        String data_0515 = "0000 " +
+//                "00000000000000000000000000000001" +//1A
+//                "80000000000000000000000000000000" +//2A
+//                "00080000000000000000000000000000" +//3A
+//                "08000000000000000000000000000000" +//4A
+//                "02000000000000000000000000000000" +//5A
+//                "00000000000000000000000000000000" +//1B
+//                "00000000000000000000000000000000" +//2B
+//                "00000000000000000000000000000000" +//3B
+//                "00000000000000000000000000000000" +//4B
+//                "00000000000000000000000000000000" +//5B
+//                "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+
         modelPacket0515.setPacketId(packet.PKT_0515);
         modelPacket0515.setLength(length.LENGTH_0144);
-        modelPacket0515.setStatus("");
-        modelPacket0515.setInput1("");
-        modelPacket0515.setInput2("");
-        modelPacket0515.setInput3("");
-        modelPacket0515.setInput4("");
-        modelPacket0515.setReserved("");
-        modelPacket0515.setReserved(data_0515);
+        modelPacket0515.setStatus("0000");
+        modelPacket0515.setInput1A("00000000000000000000000000000001");
+        modelPacket0515.setInput2A("80000000000000000000000000000000");
+        modelPacket0515.setInput3A("00080000000000000000000000000000");
+        modelPacket0515.setInput4A("00080000000000000000000000000000");
+        modelPacket0515.setInput5A("02000000000000000000000000000000");
+        modelPacket0515.setInput1B("00000000000000000000000000000000");
+        modelPacket0515.setInput2B("00000000000000000000000000000000");
+        modelPacket0515.setInput3B("00000000000000000000000000000000");
+        modelPacket0515.setInput4B("00000000000000000000000000000000");
+        modelPacket0515.setInput5B("00000000000000000000000000000000");
+        modelPacket0515.setReserved("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 
-        String data_0518 = "0000030002000000010001000000010001000000010001000000010001000000";
+//        String data_0518 = "0000 " +
+//                "03 00 02 00 0000" +
+//                "01 00 01 00 0000" +
+//                "01 00 01 00 0000" +
+//                "01 00 01 00 0000" +
+//                "01 00 01 00 0000".replace(" ", "");
+
         modelPacket0518.setPacketId(packet.PKT_0518);
         modelPacket0518.setLength(length.LENGTH_0022);
-        modelPacket0518.setStatus("");
-        modelPacket0518.setHardwareType_c1("");
-        modelPacket0518.setReserved_c1("");
-        modelPacket0518.setRoomA_c1("");
-        modelPacket0518.setRoomB_c1("");
-        modelPacket0518.setRoom_reserved_c1("");
-        modelPacket0518.setHardwareType_c2("");
-        modelPacket0518.setReserved_c2("");
-        modelPacket0518.setRoomA_c2("");
-        modelPacket0518.setRoomB_c2("");
-        modelPacket0518.setRoom_reserved_c2("");
-        modelPacket0518.setHardwareType_c3("");
-        modelPacket0518.setReserved_c3("");
-        modelPacket0518.setRoomA_c3("");
-        modelPacket0518.setRoomB_c3("");
-        modelPacket0518.setRoom_reserved_c3("");
-        modelPacket0518.setHardwareType_c4("");
-        modelPacket0518.setReserved_c4("");
-        modelPacket0518.setRoomA_c4("");
-        modelPacket0518.setRoomB_c4("");
-        modelPacket0518.setRoom_reserved_c4("");
-        modelPacket0518.setHardwareType_c5("");
-        modelPacket0518.setReserved_c5("");
-        modelPacket0518.setRoomA_c5("");
-        modelPacket0518.setRoomB_c5("");
-        modelPacket0518.setRoom_reserved_c5("");
-        modelPacket0518.setRoom_reserved_c5(data_0518);
 
-        String data_0521 = "00000000007000000000000000000000000000000000000000080000000000000000";
+        modelPacket0518.setStatus("0000");
+        modelPacket0518.setHardwareType_c1("03");
+        modelPacket0518.setReserved_c1("00");
+        modelPacket0518.setRoomA_c1("02");
+        modelPacket0518.setRoomB_c1("00");
+        modelPacket0518.setRoom_reserved_c1("0000");
+
+        modelPacket0518.setHardwareType_c2("01");
+        modelPacket0518.setReserved_c2("00");
+        modelPacket0518.setRoomA_c2("01");
+        modelPacket0518.setRoomB_c2("00");
+        modelPacket0518.setRoom_reserved_c2("0000");
+
+        modelPacket0518.setHardwareType_c3("01");
+        modelPacket0518.setReserved_c3("00");
+        modelPacket0518.setRoomA_c3("01");
+        modelPacket0518.setRoomB_c3("00");
+        modelPacket0518.setRoom_reserved_c3("0000");
+
+        modelPacket0518.setHardwareType_c4("01");
+        modelPacket0518.setReserved_c4("00");
+        modelPacket0518.setRoomA_c4("01");
+        modelPacket0518.setRoomB_c4("00");
+        modelPacket0518.setRoom_reserved_c4("0000");
+
+        modelPacket0518.setHardwareType_c5("01");
+        modelPacket0518.setReserved_c5("00");
+        modelPacket0518.setRoomA_c5("01");
+        modelPacket0518.setRoomB_c5("00");
+        modelPacket0518.setRoom_reserved_c5("0000");
+
+//        String data_0521 = "0000 000000 70 00 00 00 00 00 00 00 00 00 00000000000000000000 08 00 00000000000000";
         modelPacket0521.setPacketId(packet.PKT_0521);
         modelPacket0521.setLength(length.LENGTH_0024);
-        modelPacket0521.setStatus("");
-        modelPacket0521.setReserved1("");
-        modelPacket0521.setInput1("");
-        modelPacket0521.setInput2("");
-        modelPacket0521.setInput3("");
-        modelPacket0521.setInput4("");
-        modelPacket0521.setInput5("");
-        modelPacket0521.setInput6("");
-        modelPacket0521.setInput7("");
-        modelPacket0521.setInput8("");
-        modelPacket0521.setInput9("");
-        modelPacket0521.setInput10("");
-        modelPacket0521.setReserved2("");
-        modelPacket0521.setUrjb1("");
-        modelPacket0521.setUrjb2("");
-        modelPacket0521.setReserved3("");
-        modelPacket0521.setReserved3(data_0521);
+        modelPacket0521.setStatus("0000");
+        modelPacket0521.setReserved1("000000");
+        modelPacket0521.setInput1("70");
+        modelPacket0521.setInput2("00");
+        modelPacket0521.setInput3("00");
+        modelPacket0521.setInput4("00");
+        modelPacket0521.setInput5("00");
+        modelPacket0521.setInput6("00");
+        modelPacket0521.setInput7("00");
+        modelPacket0521.setInput8("00");
+        modelPacket0521.setInput9("00");
+        modelPacket0521.setInput10("00");
+        modelPacket0521.setReserved2("00000000000000000000");
+        modelPacket0521.setUrjb1("08");
+        modelPacket0521.setUrjb2("00");
+        modelPacket0521.setReserved3("00000000000000");
 
-        String data_0517 = "0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+//        String data_0517 = "0000 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
         modelPacket0517.setPacketId(packet.PKT_0517);
         modelPacket0517.setLength(length.LENGTH_0014);
-        modelPacket0517.setStatus("");
-        modelPacket0517.setDenominationCode("");
-        modelPacket0517.setDenominationCode(data_0517);
+        modelPacket0517.setStatus("0000");
+        modelPacket0517.setDenominationCode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
-        String data_0529 = "01010102020101010202000000000000000000000101010101010101010100000000000000000000";
+//        String data_0529 = "01 01 01 02 02 01 01 01 02 02 00 " +
+//                "000000000000000000" +
+//                "01 01 01 01 01 01 01 01 01 01 00 " +
+//                "000000000000000000";
 //        modelPacket0529.setPacketId(packet.PKT_0529);
         modelPacket0529.setPacketId("0729");
         modelPacket0529.setLength(length.LENGTH_002A);
-        modelPacket0529.setDeposit_input1("");
-        modelPacket0529.setDeposit_input2("");
-        modelPacket0529.setDeposit_input3("");
-        modelPacket0529.setDeposit_input4("");
-        modelPacket0529.setDeposit_input5("");
-        modelPacket0529.setDeposit_input6("");
-        modelPacket0529.setDeposit_input7("");
-        modelPacket0529.setDeposit_input8("");
-        modelPacket0529.setDeposit_input9("");
-        modelPacket0529.setDeposit_input10("");
-        modelPacket0529.setDeposit_input11("");
-        modelPacket0529.setDeposit_reserved("");
-        modelPacket0529.setDispense_input1("");
-        modelPacket0529.setDispense_input2("");
-        modelPacket0529.setDispense_input3("");
-        modelPacket0529.setDispense_input4("");
-        modelPacket0529.setDispense_input5("");
-        modelPacket0529.setDispense_input6("");
-        modelPacket0529.setDispense_input7("");
-        modelPacket0529.setDispense_input8("");
-        modelPacket0529.setDispense_input9("");
-        modelPacket0529.setDispense_input10("");
-        modelPacket0529.setDispense_input11("");
-        modelPacket0529.setDispense_reserved("");
-        modelPacket0529.setDispense_reserved(data_0529);
+        modelPacket0529.setDeposit_input1("01");
+        modelPacket0529.setDeposit_input2("01");
+        modelPacket0529.setDeposit_input3("01");
+        modelPacket0529.setDeposit_input4("02");
+        modelPacket0529.setDeposit_input5("02");
+        modelPacket0529.setDeposit_input6("01");
+        modelPacket0529.setDeposit_input7("01");
+        modelPacket0529.setDeposit_input8("01");
+        modelPacket0529.setDeposit_input9("02");
+        modelPacket0529.setDeposit_input10("02");
+        modelPacket0529.setDeposit_input11("00");
+        modelPacket0529.setDeposit_reserved("000000000000000000");
+        modelPacket0529.setDispense_input1("01");
+        modelPacket0529.setDispense_input2("01");
+        modelPacket0529.setDispense_input3("01");
+        modelPacket0529.setDispense_input4("01");
+        modelPacket0529.setDispense_input5("01");
+        modelPacket0529.setDispense_input6("01");
+        modelPacket0529.setDispense_input7("01");
+        modelPacket0529.setDispense_input8("01");
+        modelPacket0529.setDispense_input9("01");
+        modelPacket0529.setDispense_input10("01");
+        modelPacket0529.setDispense_input11("00");
+        modelPacket0529.setDispense_reserved("000000000000000000");
 
-        String data_0586 = "000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000FFFF0000000000000000000000000000000000000000000000000000000000000000";
+//        String data_0586 = "000000000000" +
+//                "FFFF FFFF FFFF FFFF FFFF FFFF 0000 0000 0000 0000 " +
+//                "FFFF000000000000000000000000000000000000 " +
+//                "0000 0000 00000000000000000000";
+
         modelPacket0586.setPacketId(packet.PKT_0586);
         modelPacket0586.setLength(length.LENGTH_003E);
-        modelPacket0586.setReserved_1("");
-        modelPacket0586.setInput_1("");
-        modelPacket0586.setInput_2("");
-        modelPacket0586.setInput_3("");
-        modelPacket0586.setInput_4("");
-        modelPacket0586.setInput_5("");
-        modelPacket0586.setInput_6("");
-        modelPacket0586.setInput_7("");
-        modelPacket0586.setInput_8("");
-        modelPacket0586.setInput_9("");
-        modelPacket0586.setInput_10("");
-        modelPacket0586.setReserved_2("");
-        modelPacket0586.setUrjb_1("");
-        modelPacket0586.setUrjb_2("");
-        modelPacket0586.setReserved_3("");
-        modelPacket0586.setReserved_3(data_0586);
+        modelPacket0586.setReserved_1("000000000000");
+        modelPacket0586.setInput_1("FFFF");
+        modelPacket0586.setInput_2("FFFF");
+        modelPacket0586.setInput_3("FFFF");
+        modelPacket0586.setInput_4("FFFF");
+        modelPacket0586.setInput_5("FFFF");
+        modelPacket0586.setInput_6("FFFF");
+        modelPacket0586.setInput_7("0000");
+        modelPacket0586.setInput_8("0000");
+        modelPacket0586.setInput_9("0000");
+        modelPacket0586.setInput_10("0000");
+        modelPacket0586.setReserved_2("FFFF000000000000000000000000000000000000");
+        modelPacket0586.setUrjb_1("0000");
+        modelPacket0586.setUrjb_2("0000");
+        modelPacket0586.setReserved_3("00000000000000000000");
 
         returnValue = modelPacket0001.generatePacket()
                 + modelPacket0010.generatePacket()
@@ -218,7 +256,7 @@ public class SetUnitInfo {
                 + modelPacket0518.generatePacket()
                 + modelPacket0521.generatePacket()
                 + modelPacket0517.generatePacket()
-                + modelPacket0529.generatePacket()
+//                + modelPacket0529.generatePacket()
                 + modelPacket0586.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);

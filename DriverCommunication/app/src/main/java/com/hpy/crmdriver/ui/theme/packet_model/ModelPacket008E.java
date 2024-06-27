@@ -143,7 +143,6 @@ public class ModelPacket008E {
         }
 
         AppLogs.generate(returnValue);
-        AppLogs.generate(returnValue);
         return returnValue;
     }
 

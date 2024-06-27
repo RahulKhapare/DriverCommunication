@@ -14,6 +14,7 @@ public class ControlBulkCmdGenerator {
 
     CmdSupportClass cmdSupportClass = new CmdSupportClass();
     CommandSequence commandSequence = new CommandSequence();
+    CommandType commandType = new CommandType();
     private final int TIMEOUT_10 = 10000;
     private final int TIMEOUT_20 = 20000;
 
@@ -78,7 +79,6 @@ public class ControlBulkCmdGenerator {
         int index = 0x0001;
         byte[] buffer = new byte[8];
 
-        Log.e("TAG", "commandSendingRequest_Value: " + value );
         String inputMessage = "Command Sending Request (Input): " + "reqType:" + cmdSupportClass.getHexFromInt(reqType) + " req:" + cmdSupportClass.getHexFromInt(req) + " value:" + cmdSupportClass.getHexFromInt4(value) + " index:" + cmdSupportClass.getHexFromInt(index) + " bLength:" + buffer.length;
 
         appendText(inputMessage, textView, stringBuilder);
@@ -104,14 +104,14 @@ public class ControlBulkCmdGenerator {
     }
 
 
-    public boolean bulkOutRequest(UsbDeviceConnection usbConnection, byte[] commandArray, UsbEndpoint endpointOne, TextView textView, StringBuilder stringBuilder) {
+    public boolean bulkOutRequest(UsbDeviceConnection usbConnection, byte[] commandArray, UsbEndpoint endpointOne, String command, String commandType, TextView textView, StringBuilder stringBuilder) {
         boolean returnValue = true;
         byte[] bufferRequestFirmware = commandArray;
         int transferredBytesReqFirmware = usbConnection.bulkTransfer(endpointOne, bufferRequestFirmware, bufferRequestFirmware.length, TIMEOUT_10);
 //        CmdSupportClass.printCommandHexSequence(commandArray);
         String inputMessage = "";
         if (transferredBytesReqFirmware > 0) {
-            inputMessage = "Sending BulkOut Command: " + "Successfully";
+            inputMessage = "Sending BulkOut Command ( " + commandType + " ): " + "Successfully : " + command;
             AppLogs.generate(inputMessage);
         } else {
             inputMessage = "Sending BulkOut Command: " + "Failed";
@@ -130,7 +130,6 @@ public class ControlBulkCmdGenerator {
 //        int value = 0x1200;
 //        int value = 0x0012;
         int value = commandLength;
-
         int index = 0x0001;
         byte[] buffer = new byte[8];
 
@@ -150,16 +149,15 @@ public class ControlBulkCmdGenerator {
         } else {
             AppLogs.generate("Command Sending Confirmation (Failed)");
         }
-        AppLogs.generate(returnValue);
         return returnValue;
     }
 
-    public String responseReceiveRequest(Context context, UsbDeviceConnection usbConnection, TextView textView, StringBuilder stringBuilder) {
+    public String responseReceiveRequest(Context context, UsbDeviceConnection usbConnection, int totalCount, TextView textView, StringBuilder stringBuilder) {
         String returnValue = "";
 
         int reqType = 0xC2;
 //        int req = 0x80;
-        int req = commandSequence.getNextSeqResponseRecReq(context);
+        int req = commandSequence.getNextSeqResponseRecReq(context, totalCount);
         int value = 0x0000;
         int index = 0x0002;
         byte[] buffer = new byte[8];
@@ -180,18 +178,27 @@ public class ControlBulkCmdGenerator {
         } else {
             AppLogs.generate("Response Receiving Request (Failed)");
         }
-        AppLogs.generate(returnValue);
         return returnValue;
     }
 
 
-    public String receivedBulInRequest(Context context, UsbDeviceConnection usbConnection, UsbEndpoint usbEndpointTwo) {
+    public String receivedBulInRequest(Context context, UsbDeviceConnection usbConnection, UsbEndpoint usbEndpointTwo, String cmdType, int datLength) {
 
         String returnValue = "";
 
-        byte[] bufferResponse = new byte[usbEndpointTwo.getMaxPacketSize()];
+        byte[] bufferResponse = new byte[datLength];
+
+//        if (cmdType.equalsIgnoreCase(commandType.RESET)) {
+//            bufferResponse = new byte[63504];
+//        } else {
+//            bufferResponse = new byte[usbEndpointTwo.getMaxPacketSize()];
+//        }
+
         int bytesReadResp = usbConnection.bulkTransfer(usbEndpointTwo, bufferResponse, bufferResponse.length, TIMEOUT_20);
 
+        //byte[] bufferResponse1 = new byte[usbEndpointTwo.getMaxPacketSize()];
+
+        AppLogs.generate("receivedBulInRequest_Length : " + bufferResponse.length);
         if (bytesReadResp > 0) {
             String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(bytesReadResp, bufferResponse);
             AppLogs.generate("Received BulkIn Data: " + bytesToHex);
@@ -201,16 +208,15 @@ public class ControlBulkCmdGenerator {
             AppLogs.generate("Received BulkIn Command: " + "Failed");
         }
 
-        AppLogs.generate(returnValue);
         return returnValue;
     }
 
-    public String responseReceivedConformation(Context context, UsbDeviceConnection usbConnection, TextView textView, StringBuilder stringBuilder) {
+    public String responseReceivedConformation(Context context, UsbDeviceConnection usbConnection, int totalCount, TextView textView, StringBuilder stringBuilder) {
         String returnValue = "";
 
         int reqType = 0xC2;
 //        int req = 0x90;
-        int req = commandSequence.getNextSeqResponseRecConf(context);
+        int req = commandSequence.getNextSeqResponseRecConf(context, totalCount);
         int value = 0x0000;
         int index = 0x0002;
         byte[] buffer = new byte[8];
@@ -219,7 +225,6 @@ public class ControlBulkCmdGenerator {
         AppLogs.generate(inputMessage);
 
         appendText(inputMessage, textView, stringBuilder);
-        AppLogs.generate(inputMessage);
         int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, TIMEOUT_10);
         if (length > 0) {
             StringBuilder sb = new StringBuilder();
@@ -231,12 +236,11 @@ public class ControlBulkCmdGenerator {
         } else {
             AppLogs.generate("Response Receiving Confirmation (Failed)");
         }
-        AppLogs.generate(returnValue);
         return returnValue;
     }
 
     public void appendText(String message, TextView textView, StringBuilder stringBuilder) {
-        stringBuilder.append(message + "\n\n");
+        stringBuilder.append(message + "\n");
         textView.setText(stringBuilder.toString());
     }
 }

@@ -32,7 +32,7 @@ public class StringHelper {
         } catch (Exception e) {
         }
 
-        AppLogs.generate(returnValue);
+//        AppLogs.generate(returnValue);
         return returnValue;
     }
 

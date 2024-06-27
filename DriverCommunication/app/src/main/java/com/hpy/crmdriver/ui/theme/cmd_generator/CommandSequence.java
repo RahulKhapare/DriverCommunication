@@ -99,7 +99,7 @@ public class CommandSequence {
     }
 
 
-    public int getNextSeqResponseRecReq(Context context) {
+    public int getNextSeqResponseRecReq(Context context, int totalCount) {
         // Retrieve the previous value stored in session data
         String previousValue = SessionData.getStringValue(context, KeyValue.RES_RECEIVING_REQ);
 
@@ -116,8 +116,13 @@ public class CommandSequence {
 
         // Increment the integer value
         if (isUpdate) {
-            intValue++;
+            if (totalCount <= 3) {
+                //do nothing
+            } else {
+                intValue++;
+            }
         }
+
 
         // Reset to 0x80 if it reaches 0x8F
         if (intValue > 0x8F) {
@@ -134,7 +139,7 @@ public class CommandSequence {
         return intValue;
     }
 
-    public int getNextSeqResponseRecConf(Context context) {
+    public int getNextSeqResponseRecConf(Context context, int totalCount) {
         // Retrieve the previous value stored in session data
         String previousValue = SessionData.getStringValue(context, KeyValue.RES_RECEIVING_CONF);
 
@@ -151,7 +156,11 @@ public class CommandSequence {
 
         // Increment the integer value
         if (isUpdate) {
-            intValue++;
+            if (totalCount < 3) {
+                //do nothing
+            } else {
+                intValue++;
+            }
         }
 
         // Reset to 0x90 if it reaches 0x9F

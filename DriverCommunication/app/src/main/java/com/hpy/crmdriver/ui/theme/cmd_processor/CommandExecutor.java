@@ -28,7 +28,6 @@ public class CommandExecutor {
 //        //Reset
         commandControllerProcessor.reset(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
 
-        Log.e("TAG", "initResponse: " + returnValue);
         return returnValue;
     }
 

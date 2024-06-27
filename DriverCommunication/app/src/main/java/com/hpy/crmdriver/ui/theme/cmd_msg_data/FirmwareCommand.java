@@ -51,7 +51,6 @@ public class FirmwareCommand {
         return returnValue;
     }
 
-
     public ModelPacket0081 modelPacket0081 = new ModelPacket0081();
     public ModelPacket008E modelPacket008E = new ModelPacket008E();
     public ModelPacket0581 modelPacket0581 = new ModelPacket0581();
