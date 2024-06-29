@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+
     android:scrollbars="vertical">
 
     <LinearLayout
@@ -13,12 +14,127 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <Button
-            android:id="@+id/btnSendCommand"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Send Command"></Button>
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnResetQuick"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    android:text="RESET QUICK"></Button>
+
+                <Button
+                    android:id="@+id/btnOpenShutterNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    android:text="OPEN SHUTTER"></Button>
+
+                <Button
+                    android:id="@+id/btnCloseShutterNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    android:text="CLOSE SHUTTER"></Button>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Initialization"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <Button
+                android:id="@+id/btnFirmware"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:text="FIRMWARE"></Button>
+
+            <Button
+                android:id="@+id/btnSetUnitInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:text="SET UNIT INFO"></Button>
+
+            <Button
+                android:id="@+id/btnResetNormal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:text="RESET"></Button>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Deposit"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <Button
+                android:id="@+id/btnPrepareTransaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:text="PREPARE TRANSACTION"></Button>
+
+            <Button
+                android:id="@+id/btnOpenShutter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:text="OPEN SHUTTER"></Button>
+
+            <Button
+                android:id="@+id/btnCashCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:text="CASH COUNT"></Button>
+
+            <Button
+                android:id="@+id/btnStoreMoney"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:text="STORE MONEY"></Button>
+
+
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"

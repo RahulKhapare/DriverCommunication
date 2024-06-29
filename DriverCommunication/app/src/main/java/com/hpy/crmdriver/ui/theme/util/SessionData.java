@@ -47,7 +47,7 @@ public class SessionData {
         return value;
     }
 
-    public static void clearAllSession(Context context) {
+    public void clearAllSession(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(DB, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();

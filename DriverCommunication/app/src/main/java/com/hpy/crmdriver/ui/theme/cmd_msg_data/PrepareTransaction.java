@@ -2,6 +2,7 @@ package com.hpy.crmdriver.ui.theme.cmd_msg_data;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.hpy.crmdriver.ui.theme.cmd_formatter.MessageDataLengthGenerator;
 import com.hpy.crmdriver.ui.theme.cmd_generator.CommandData;
@@ -13,6 +14,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0081;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket008E;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0581;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class PrepareTransaction {
@@ -21,19 +24,28 @@ public class PrepareTransaction {
 
     public Packet packet = new Packet();
     public Length length = new Length();
+    private AppConfig appConfig = new AppConfig();
     public CommandData commandData = new CommandData();
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
     private SessionModel sessionModel = new SessionModel();
 
 
-    public String generateCommand() {
+    public String generateCommand(Context context) {
         String returnValue = "";
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
 
+        String cmdType = SessionData.getStringValue(context, appConfig.PREPARE_TRANSACTION_VALUE);
+        if (cmdType.equals(appConfig.PREPARE_NEXT_TRANSACTION)) {
+            modelPacket0001.setCommand("6000");
+        } else if (cmdType.equals(appConfig.PREPARE_START_TRANSACTION)) {
+            modelPacket0001.setCommand("6001");
+        } else if (cmdType.equals(appConfig.PREPARE_DISPENSE_TRANSACTION)) {
+            modelPacket0001.setCommand("6003");
+        }
+        Log.e("TAG", "prepareTransaction_Command: " + modelPacket0001.getCommand());
         returnValue = modelPacket0001.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);
@@ -45,7 +57,7 @@ public class PrepareTransaction {
     public ModelPacket008E modelPacket008E = new ModelPacket008E();
     public ModelPacket0581 modelPacket0581 = new ModelPacket0581();
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 

@@ -2,6 +2,7 @@ package com.hpy.crmdriver.ui.theme.cmd_msg_data;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.hpy.crmdriver.ui.theme.cmd_formatter.MessageDataLengthGenerator;
 import com.hpy.crmdriver.ui.theme.cmd_generator.CommandData;
@@ -17,6 +18,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0586;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket058A;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket058B;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class Reset {
@@ -24,20 +27,30 @@ public class Reset {
     public ModelPacket0001 modelPacket0001 = new ModelPacket0001();
     public Packet packet = new Packet();
     public Length length = new Length();
+    public AppConfig appConfig = new AppConfig();
     public CommandData commandData = new CommandData();
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
     private SessionModel sessionModel = new SessionModel();
 
 
-    public String generateCommand() {
+    public String generateCommand(Context context) {
         String returnValue = "";
 
         //001200100001000500080001000407010BCC
 
+        String cmdType = SessionData.getStringValue(context, appConfig.RESET_TYPE);
+
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("0701");
+
+        Log.e("TAG", "generateCommandRESERT: " +cmdType );
+
+        if (cmdType.equals(appConfig.RESET_TYPE_FIRMWARE)) {
+            modelPacket0001.setCommand("0701");
+        } else if (cmdType.equals(appConfig.RESET_TYPE_QUICK)) {
+            modelPacket0001.setCommand("0720");
+        }
 
         returnValue = modelPacket0001.generatePacket();
 

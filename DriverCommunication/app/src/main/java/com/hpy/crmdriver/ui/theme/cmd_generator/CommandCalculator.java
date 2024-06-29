@@ -41,12 +41,16 @@ public class CommandCalculator {
     public String FLG = "01";
     public String RSV = "00 00";
 
+    //0012 0000 0801 0000 0008 0001 0004 3F00 371E
+
     public String getCommand(Context context, String commandType) {
         String returnValue = "";
 
         SEQ = commandSequence.getNextSeqCommand(context);
 
-        String beforeLengthData = SA_UA + SEQ + FLG + RSV + getPacketMessageData(commandType);
+        AppLogs.generateTAG("CMD_SWQ", commandType + " SEQ : " + SEQ);
+
+        String beforeLengthData = SA_UA + SEQ + FLG + RSV + getPacketMessageData(context, commandType);
 
         //get total message length
         String totalLength = getTotalMessageLength(beforeLengthData.replaceAll(" ", ""));
@@ -73,7 +77,7 @@ public class CommandCalculator {
 
     }
 
-    public String getPacketMessageData(String cmdType) {
+    public String getPacketMessageData(Context context, String cmdType) {
         String returnValue = "";
 
         if (cmdType.equals(commandType.GET_FIRMWARE)) {
@@ -85,7 +89,7 @@ public class CommandCalculator {
         } else if (cmdType.equals(commandType.SET_UNIT_INFO)) {
             returnValue = new SetUnitInfo().generateCommand();
         } else if (cmdType.equals(commandType.RESET)) {
-            returnValue = new Reset().generateCommand();
+            returnValue = new Reset().generateCommand(context);
         } else if (cmdType.equals(commandType.DRIVER_ACCESSORY)) {
             returnValue = new DriverAccessory().generateCommand();
         } else if (cmdType.equals(commandType.READ_STATUS)) {
@@ -99,7 +103,7 @@ public class CommandCalculator {
         } else if (cmdType.equals(commandType.DISPENSE)) {
             returnValue = new Dispense().generateCommand(appConfig.DISPENSE_PER_DENOMINATION);
         } else if (cmdType.equals(commandType.STORE_MONEY)) {
-            returnValue = new StoreMoney().generateCommand();
+            returnValue = new StoreMoney().generateCommand(context);
         } else if (cmdType.equals(commandType.CASH_ROLLBACK)) {
             returnValue = new CashRollback().generateCommand();
         } else if (cmdType.equals(commandType.RETRACT)) {
@@ -107,9 +111,9 @@ public class CommandCalculator {
         } else if (cmdType.equals(commandType.TRANSFER)) {
             returnValue = new Transfer().generateCommand();
         } else if (cmdType.equals(commandType.DRIVE_SHUTTER)) {
-            returnValue = new DriveShutter().generateCommand();
+            returnValue = new DriveShutter().generateCommand(context);
         } else if (cmdType.equals(commandType.PREPARE_TRANS)) {
-            returnValue = new PrepareTransaction().generateCommand();
+            returnValue = new PrepareTransaction().generateCommand(context);
         } else if (cmdType.equals(commandType.GET_BANK_NOTE_INFO)) {
             returnValue = new GetBankNoteInfo().generateCommand();
         } else if (cmdType.equals(commandType.GET_CASSETTE_INFO)) {

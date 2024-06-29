@@ -48,11 +48,11 @@ public class CommandGenerator {
 
     public boolean isResponseReceived = false;
 
-    public String generate(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
+    public boolean generate(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
         clearData();
         clearCommandCounter();
         stringBuilder = new StringBuilder();
-        String returnValue = "";
+        boolean isSuccess = false;
         String message = "";
         message = textView.getText().toString();
         appendText(message, textView);
@@ -67,11 +67,11 @@ public class CommandGenerator {
         message = "\n\n**** Start " + commandType + " Command ****";
         appendText(message, textView);
         AppLogs.generate(message);
-        returnValue = getInputCommandValue(context, usbConnection, endpointOne, endpointTwo, commandType, textView);
+        isSuccess = getInputCommandValue(context, usbConnection, endpointOne, endpointTwo, commandType, textView);
         message = "**** End " + commandType + " Command ****\n\n";
         appendText(message, textView);
         AppLogs.generate(message);
-        return returnValue;
+        return isSuccess;
     }
 
     public void clearData() {
@@ -91,7 +91,7 @@ public class CommandGenerator {
         return decimalValue;
     }
 
-    public String getInputCommandValue(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
+    public boolean getInputCommandValue(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
 
         String responseCode = "";
         String returnValue = "";
@@ -122,7 +122,7 @@ public class CommandGenerator {
             interruptStatus = checkInterruptStatus(context, commandType);
 
             //TODO - Bulk-Out Request (Step 2)
-            boolean isBulkOutRequest = controlBulkCmdGenerator.bulkOutRequest(usbConnection, commandArray, endpointOne, command,commandType, textView, stringBuilder);
+            boolean isBulkOutRequest = controlBulkCmdGenerator.bulkOutRequest(usbConnection, commandArray, endpointOne, command, commandType, textView, stringBuilder);
 
             if (isBulkOutRequest) {
 
@@ -282,7 +282,7 @@ public class CommandGenerator {
         appendText("Error Reason: " + cmdSupportClass.getErrorReason(responseCode), textView);
 
 //        AppLogs.generate(returnValue);
-        return returnValue;
+        return isResponseReceived;
     }
 
     public String returnError(String responseCode) {

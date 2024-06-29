@@ -1,5 +1,7 @@
 package com.hpy.crmdriver.ui.theme.session;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -39,6 +41,13 @@ public class SessionModel {
         SharedPreferences sharedPreferences = context.getSharedPreferences(MY_PREF, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(key);
+        editor.apply();
+    }
+
+    public void clearAllSession(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(MY_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
         editor.apply();
     }
 

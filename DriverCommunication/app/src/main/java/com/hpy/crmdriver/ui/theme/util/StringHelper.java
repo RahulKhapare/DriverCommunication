@@ -40,4 +40,9 @@ public class StringHelper {
         return x * 2;
     }
 
+
+    public String getLastDigit(String input, int digit) {
+        String lastTwoDigits = input.substring(input.length() - digit);
+        return lastTwoDigits;
+    }
 }

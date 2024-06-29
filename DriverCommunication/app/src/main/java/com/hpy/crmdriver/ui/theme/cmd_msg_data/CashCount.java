@@ -65,53 +65,55 @@ public class CashCount {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+//        modelPacket0001.setCommand("1000");//Actual Cash
+        modelPacket0001.setCommand("1900");//Test Cash
 
-        modelPacket0517.setPacketId(packet.PKT_0517);
-        modelPacket0517.setLength(length.LENGTH_0014);
-        modelPacket0517.setStatus("");
-        modelPacket0517.setDenominationCode("");
+//        modelPacket0517.setPacketId(packet.PKT_0517);
+//        modelPacket0517.setLength(length.LENGTH_0014);
+//        modelPacket0517.setStatus("");
+//        modelPacket0517.setDenominationCode("");
+//
+//        modelPacket0530.setPacketId(packet.PKT_0530);
+//        modelPacket0530.setLength(length.LENGTH_0004);
+//        modelPacket0530.setDepositLimit("");
+//
+//        modelPacket0587.setPacketId(packet.PKT_0587);
+//        modelPacket0587.setLength(length.LENGTH_0006);
+//        modelPacket0587.setDigit("");
+//        modelPacket0587.setPowerIndex("");
+//        modelPacket0587.setPacketId("");
+//
+//        modelPacket0551.setPacketId(packet.PKT_0551);
+//        modelPacket0551.setLength(length.LENGTH_0004);
+//        modelPacket0551.setDestinationForReject("");
+//
+//        modelPacket0550.setPacketId(packet.PKT_0550);
+//        modelPacket0550.setLength(length.LENGTH_0022);
+//        modelPacket0550.setReserved_1("");
+//        modelPacket0550.setInput_1("");
+//        modelPacket0550.setInput_2("");
+//        modelPacket0550.setInput_3("");
+//        modelPacket0550.setInput_4("");
+//        modelPacket0550.setInput_5("");
+//        modelPacket0550.setInput_6("");
+//        modelPacket0550.setInput_7("");
+//        modelPacket0550.setInput_8("");
+//        modelPacket0550.setInput_9("");
+//        modelPacket0550.setInput_10("");
+//        modelPacket0550.setReserved_2("");
+//        modelPacket0550.setUrjb_1("");
+//        modelPacket0550.setUrjb_2("");
+//        modelPacket0550.setReserved_3("");
+//
+//        modelPacket052A.setPacketId(packet.PKT_052A);
+//        modelPacket052A.setLength(length.LENGTH_0004);
+//        modelPacket052A.setRecordModeAreImage("");
+//        modelPacket052A.setReserved("");
 
-        modelPacket0530.setPacketId(packet.PKT_0530);
-        modelPacket0530.setLength(length.LENGTH_0004);
-        modelPacket0530.setDepositLimit("");
-
-        modelPacket0587.setPacketId(packet.PKT_0587);
-        modelPacket0587.setLength(length.LENGTH_0006);
-        modelPacket0587.setDigit("");
-        modelPacket0587.setPowerIndex("");
-        modelPacket0587.setPacketId("");
-
-        modelPacket0551.setPacketId(packet.PKT_0551);
-        modelPacket0551.setLength(length.LENGTH_0004);
-        modelPacket0551.setDestinationForReject("");
-
-        modelPacket0550.setPacketId(packet.PKT_0550);
-        modelPacket0550.setLength(length.LENGTH_0022);
-        modelPacket0550.setReserved_1("");
-        modelPacket0550.setInput_1("");
-        modelPacket0550.setInput_2("");
-        modelPacket0550.setInput_3("");
-        modelPacket0550.setInput_4("");
-        modelPacket0550.setInput_5("");
-        modelPacket0550.setInput_6("");
-        modelPacket0550.setInput_7("");
-        modelPacket0550.setInput_8("");
-        modelPacket0550.setInput_9("");
-        modelPacket0550.setInput_10("");
-        modelPacket0550.setReserved_2("");
-        modelPacket0550.setUrjb_1("");
-        modelPacket0550.setUrjb_2("");
-        modelPacket0550.setReserved_3("");
-
-        modelPacket052A.setPacketId(packet.PKT_052A);
-        modelPacket052A.setLength(length.LENGTH_0004);
-        modelPacket052A.setRecordModeAreImage("");
-        modelPacket052A.setReserved("");
-
-        returnValue = modelPacket0001.generatePacket() + modelPacket0517.generatePacket() + modelPacket0530.generatePacket() +
-                modelPacket0587.generatePacket() + modelPacket0551.generatePacket() + modelPacket0550.generatePacket() +
-                modelPacket052A.generatePacket();
+        returnValue = modelPacket0001.generatePacket();
+//                + modelPacket0517.generatePacket() + modelPacket0530.generatePacket() +
+//                modelPacket0587.generatePacket() + modelPacket0551.generatePacket() + modelPacket0550.generatePacket() +
+//                modelPacket052A.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);
         returnValue = messageHeaderLength + returnValue;

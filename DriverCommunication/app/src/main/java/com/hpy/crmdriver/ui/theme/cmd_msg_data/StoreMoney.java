@@ -41,6 +41,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D1;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D2;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D3;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class StoreMoney {
@@ -54,47 +56,58 @@ public class StoreMoney {
 
     public Packet packet = new Packet();
     public Length length = new Length();
+    public AppConfig appConfig = new AppConfig();
     public CommandData commandData = new CommandData();
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
     private SessionModel sessionModel = new SessionModel();
 
-    public String generateCommand() {
+    public String generateCommand(Context context) {
         String returnValue = "";
+
+        String cmdType = SessionData.getStringValue(context, appConfig.STORE_MONEY_VALUE);
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
 
-        modelPacket0550.setPacketId(packet.PKT_0550);
-        modelPacket0550.setLength(length.LENGTH_0022);
-        modelPacket0550.setReserved_1("");
-        modelPacket0550.setInput_1("");
-        modelPacket0550.setInput_2("");
-        modelPacket0550.setInput_3("");
-        modelPacket0550.setInput_4("");
-        modelPacket0550.setInput_5("");
-        modelPacket0550.setInput_6("");
-        modelPacket0550.setInput_7("");
-        modelPacket0550.setInput_8("");
-        modelPacket0550.setInput_9("");
-        modelPacket0550.setInput_10("");
-        modelPacket0550.setReserved_2("");
-        modelPacket0550.setUrjb_1("");
-        modelPacket0550.setUrjb_2("");
-        modelPacket0550.setReserved_3("");
+        if (cmdType.equals(appConfig.STORE_MONEY_NORMAL)) {
+            modelPacket0001.setCommand("3F00");//Test Cash
+        } else if (cmdType.equals(appConfig.STORE_MONEY_WITHOUT_CS_CHECK)) {
+            modelPacket0001.setCommand("3F01");//Test Cash
+        } else if (cmdType.equals(appConfig.STORE_MONEY_FOR_LOADING)) {
+            modelPacket0001.setCommand("3F10");//Test Cash
+        }
 
-        modelPacket0551.setPacketId(packet.PKT_0551);
-        modelPacket0551.setLength(length.LENGTH_0004);
-        modelPacket0551.setDestinationForReject("");
+//        modelPacket0550.setPacketId(packet.PKT_0550);
+//        modelPacket0550.setLength(length.LENGTH_0022);
+//        modelPacket0550.setReserved_1("");
+//        modelPacket0550.setInput_1("");
+//        modelPacket0550.setInput_2("");
+//        modelPacket0550.setInput_3("");
+//        modelPacket0550.setInput_4("");
+//        modelPacket0550.setInput_5("");
+//        modelPacket0550.setInput_6("");
+//        modelPacket0550.setInput_7("");
+//        modelPacket0550.setInput_8("");
+//        modelPacket0550.setInput_9("");
+//        modelPacket0550.setInput_10("");
+//        modelPacket0550.setReserved_2("");
+//        modelPacket0550.setUrjb_1("");
+//        modelPacket0550.setUrjb_2("");
+//        modelPacket0550.setReserved_3("");
+//
+//        modelPacket0551.setPacketId(packet.PKT_0551);
+//        modelPacket0551.setLength(length.LENGTH_0004);
+//        modelPacket0551.setDestinationForReject("");
+//
+//        modelPacket052A.setPacketId(packet.PKT_052A);
+//        modelPacket052A.setLength(length.LENGTH_0004);
+//        modelPacket052A.setRecordModeAreImage("");
+//        modelPacket052A.setReserved("");
 
-        modelPacket052A.setPacketId(packet.PKT_052A);
-        modelPacket052A.setLength(length.LENGTH_0004);
-        modelPacket052A.setRecordModeAreImage("");
-        modelPacket052A.setReserved("");
-
-        returnValue = modelPacket0001.generatePacket() + modelPacket0550.generatePacket() +
-                modelPacket0551.generatePacket() + modelPacket052A.generatePacket();
+        returnValue = modelPacket0001.generatePacket();
+//                + modelPacket0550.generatePacket() +
+//                modelPacket0551.generatePacket() + modelPacket052A.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);
         returnValue = messageHeaderLength + returnValue;
@@ -129,7 +142,7 @@ public class StoreMoney {
     public ModelPacket05CD modelPacket05CD = new ModelPacket05CD();
     public ModelPacket0585 modelPacket0585 = new ModelPacket0585();
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 

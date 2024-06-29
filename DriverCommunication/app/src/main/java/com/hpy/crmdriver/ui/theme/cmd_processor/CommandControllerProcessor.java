@@ -12,6 +12,7 @@ import com.hpy.crmdriver.ui.theme.cmd_generator.CommandType;
 import com.hpy.crmdriver.ui.theme.cmd_generator.ControlBulkCmdGenerator;
 import com.hpy.crmdriver.ui.theme.interrupt_formatter.InterruptFormatter;
 import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 
 public class CommandControllerProcessor {
 
@@ -60,233 +61,216 @@ public class CommandControllerProcessor {
         return value + 1;
     }
 
-    public String getFirmwareVersion(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean getFirmwareVersion(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess = false;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_FIRMWARE, txtCommunicationProcess);
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_FIRMWARE, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String programDownload(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean programDownload(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess = false;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.PROGRAM_DOWNLOAD, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.PROGRAM_DOWNLOAD, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String getUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean getUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_UNIT_INFO, txtCommunicationProcess);
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_UNIT_INFO, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String setUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean setUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess = false;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.SET_UNIT_INFO, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.SET_UNIT_INFO, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String reset(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean reset(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType,TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.RESET, txtCommunicationProcess);
-
-        return returnValue;
+        SessionData.addValue(context, appConfig.RESET_TYPE, cmdType);
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.RESET, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String driveAccessory(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean driveAccessory(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.DRIVER_ACCESSORY, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.DRIVER_ACCESSORY, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String readStatus(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean readStatus(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.READ_STATUS, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.READ_STATUS, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String getLogData(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean getLogData(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_LOGS_DATA, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_LOGS_DATA, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String cancel(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean cancel(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.CANCEL, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.CANCEL, txtCommunicationProcess);
+        return isSuccess;
     }
 
 
-    public String cashCount(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean cashCount(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean returnValue;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
         returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.CASH_COUNT, txtCommunicationProcess);
-
         return returnValue;
     }
 
-    public String dispense(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean dispense(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.DISPENSE, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.DISPENSE, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String storeMoney(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean storeMoney(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.STORE_MONEY, txtCommunicationProcess);
-
-        return returnValue;
+        SessionData.addValue(context, appConfig.STORE_MONEY_VALUE, cmdType);
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.STORE_MONEY, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String cashRollback(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean cashRollback(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.CASH_ROLLBACK, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.CASH_ROLLBACK, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String retract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean retract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean returnValue;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
         returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.RETRACT, txtCommunicationProcess);
-
         return returnValue;
     }
 
-    public String transfer(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean transfer(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean returnValue;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
         returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.TRANSFER, txtCommunicationProcess);
-
         return returnValue;
     }
 
-    public String driveShutter(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean driveShutter(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess = false;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.DRIVE_SHUTTER, txtCommunicationProcess);
-
-        return returnValue;
+        SessionData.addValue(context, appConfig.DRIVE_SHUTTER_VALUE, cmdType);
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.DRIVE_SHUTTER, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String prepareTransaction(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean prepareTransaction(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.PREPARE_TRANS, txtCommunicationProcess);
-
-        return returnValue;
+        SessionData.addValue(context, appConfig.PREPARE_TRANSACTION_VALUE, cmdType);
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.PREPARE_TRANS, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String getBanknoteInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean getBanknoteInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_BANK_NOTE_INFO, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_BANK_NOTE_INFO, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String getCassetteInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean getCassetteInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_CASSETTE_INFO, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_CASSETTE_INFO, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String setDenominationCode(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean setDenominationCode(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.SET_DENOMINATION_CODE, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.SET_DENOMINATION_CODE, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String userMemoryWrite(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean userMemoryWrite(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.USER_MEMORY_WRITE, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.USER_MEMORY_WRITE, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String userMemoryRead(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean userMemoryRead(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.USER_MEMORY_READ, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.USER_MEMORY_READ, txtCommunicationProcess);
+        return isSuccess;
     }
 
-    public String reboot(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean reboot(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         //TODO - check for entire process
-        String returnValue = "";
+        boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
-        returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.REBOOT, txtCommunicationProcess);
-
-        return returnValue;
+        isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.REBOOT, txtCommunicationProcess);
+        return isSuccess;
     }
 
 //    public void testCommand(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {

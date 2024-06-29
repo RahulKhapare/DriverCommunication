@@ -17,6 +17,7 @@ public class ControlBulkCmdGenerator {
     CommandType commandType = new CommandType();
     private final int TIMEOUT_10 = 10000;
     private final int TIMEOUT_20 = 20000;
+    String TAG = "CMD_INPUT_OUTPUT";
 
     public String deviceDescriptorData(UsbDeviceConnection usbConnection, TextView textView) {
         String returnValue = "";
@@ -112,10 +113,10 @@ public class ControlBulkCmdGenerator {
         String inputMessage = "";
         if (transferredBytesReqFirmware > 0) {
             inputMessage = "Sending BulkOut Command ( " + commandType + " ): " + "Successfully : " + command;
-            AppLogs.generate(inputMessage);
+            AppLogs.generateTAG(TAG, inputMessage);
         } else {
-            inputMessage = "Sending BulkOut Command: " + "Failed";
-            AppLogs.generate(inputMessage);
+            inputMessage = "Sending BulkOut Command ( " + commandType + " ): " + "Failed";
+            AppLogs.generateTAG(TAG, inputMessage);
         }
         appendText(inputMessage, textView, stringBuilder);
         return returnValue;
@@ -201,14 +202,16 @@ public class ControlBulkCmdGenerator {
         AppLogs.generate("receivedBulInRequest_Length : " + bufferResponse.length);
         if (bytesReadResp > 0) {
             String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(bytesReadResp, bufferResponse);
-            AppLogs.generate("Received BulkIn Data: " + bytesToHex);
-            AppLogs.generate("Received BulkIn Command: " + "Successfully");
+            String outputMessage = "Received BulkIn Data  ( " + cmdType + " ): " + "Successfully : " + bytesToHex.replaceAll(" ","");
+            AppLogs.generateTAG(TAG, outputMessage);
             returnValue = bytesToHex;
         } else {
-            AppLogs.generate("Received BulkIn Command: " + "Failed");
+            String outputMessage = "Received BulkIn Data  ( " + cmdType + " ): " + "Failed";
+            AppLogs.generateTAG(TAG, outputMessage);
         }
 
         return returnValue;
+
     }
 
     public String responseReceivedConformation(Context context, UsbDeviceConnection usbConnection, int totalCount, TextView textView, StringBuilder stringBuilder) {
