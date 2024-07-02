@@ -32,8 +32,6 @@ public class AppConfig {
     public int POSITION_23 = 23;
     public boolean IS_CHECKING_INTERRUPT = false;
 
-    public String DISPENSE_PER_DENOMINATION = "01";
-    public String DISPENSE_PER_ROOM = "02";
     public String DRIVE_SHUTTER_VALUE = "DRIVE_SHUTTER_VALUE";
     public String OPEN_SHUTTER = "OPEN_SHUTTER";
     public String CLOSE_SHUTTER = "CLOSE_SHUTTER";
@@ -54,6 +52,15 @@ public class AppConfig {
     public String RESET_TYPE = "RESET_TYPE";
     public String RESET_TYPE_FIRMWARE = "RESET_TYPE_FIRMWARE";
     public String RESET_TYPE_QUICK = "RESET_TYPE_QUICK";
+
+    public String DISPENSE_VALUE = "DISPENSE_VALUE";
+    public String DISPENSE_PER_DENOMINATION = "DISPENSE_PER_DENOMINATION";
+    public String DISPENSE_PER_ROOM = "DISPENSE_PER_ROOM";
+
+    public String GET_UNIT_INFO = "GET_UNIT_INFO";
+    public String GET_UNIT_INFO_NORMAL = "GET_UNIT_INFO_NORMAL";
+    public String GET_UNIT_INFO_ABNORMAL_END = "GET_UNIT_INFO_ABNORMAL_END";
+    public String GET_UNIT_INFO_INVALID_CMD = "GET_UNIT_INFO_INVALID_CMD";
 
 
 }

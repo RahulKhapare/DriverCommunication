@@ -50,27 +50,28 @@ public class CashRollback {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        modelPacket0001.setCommand("3100");
+//
+//        modelPacket0550.setPacketId(packet.PKT_0550);
+//        modelPacket0550.setLength(length.LENGTH_0022);
+//        modelPacket0550.setReserved_1("");
+//        modelPacket0550.setInput_1("");
+//        modelPacket0550.setInput_2("");
+//        modelPacket0550.setInput_3("");
+//        modelPacket0550.setInput_4("");
+//        modelPacket0550.setInput_5("");
+//        modelPacket0550.setInput_6("");
+//        modelPacket0550.setInput_7("");
+//        modelPacket0550.setInput_8("");
+//        modelPacket0550.setInput_9("");
+//        modelPacket0550.setInput_10("");
+//        modelPacket0550.setReserved_2("");
+//        modelPacket0550.setUrjb_1("");
+//        modelPacket0550.setUrjb_2("");
+//        modelPacket0550.setReserved_3("");
 
-        modelPacket0550.setPacketId(packet.PKT_0550);
-        modelPacket0550.setLength(length.LENGTH_0022);
-        modelPacket0550.setReserved_1("");
-        modelPacket0550.setInput_1("");
-        modelPacket0550.setInput_2("");
-        modelPacket0550.setInput_3("");
-        modelPacket0550.setInput_4("");
-        modelPacket0550.setInput_5("");
-        modelPacket0550.setInput_6("");
-        modelPacket0550.setInput_7("");
-        modelPacket0550.setInput_8("");
-        modelPacket0550.setInput_9("");
-        modelPacket0550.setInput_10("");
-        modelPacket0550.setReserved_2("");
-        modelPacket0550.setUrjb_1("");
-        modelPacket0550.setUrjb_2("");
-        modelPacket0550.setReserved_3("");
-
-        returnValue = modelPacket0001.generatePacket() + modelPacket0550.generatePacket();
+        returnValue = modelPacket0001.generatePacket();
+//                modelPacket0550.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);
         returnValue = messageHeaderLength + returnValue;
@@ -98,7 +99,7 @@ public class CashRollback {
     public ModelPacket05A7 modelPacket05A7 = new ModelPacket05A7();
     public ModelPacket0585 modelPacket0585 = new ModelPacket0585();
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 

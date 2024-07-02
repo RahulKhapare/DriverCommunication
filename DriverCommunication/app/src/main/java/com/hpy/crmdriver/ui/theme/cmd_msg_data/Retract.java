@@ -63,37 +63,38 @@ public class Retract {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        modelPacket0001.setCommand("4FA0");
 
-        modelPacket0550.setPacketId(packet.PKT_0550);
-        modelPacket0550.setLength(length.LENGTH_0022);
-        modelPacket0550.setReserved_1("");
-        modelPacket0550.setInput_1("");
-        modelPacket0550.setInput_2("");
-        modelPacket0550.setInput_3("");
-        modelPacket0550.setInput_4("");
-        modelPacket0550.setInput_5("");
-        modelPacket0550.setInput_6("");
-        modelPacket0550.setInput_7("");
-        modelPacket0550.setInput_8("");
-        modelPacket0550.setInput_9("");
-        modelPacket0550.setInput_10("");
-        modelPacket0550.setReserved_2("");
-        modelPacket0550.setUrjb_1("");
-        modelPacket0550.setUrjb_2("");
-        modelPacket0550.setReserved_3("");
+//        modelPacket0550.setPacketId(packet.PKT_0550);
+//        modelPacket0550.setLength(length.LENGTH_0022);
+//        modelPacket0550.setReserved_1("");
+//        modelPacket0550.setInput_1("");
+//        modelPacket0550.setInput_2("");
+//        modelPacket0550.setInput_3("");
+//        modelPacket0550.setInput_4("");
+//        modelPacket0550.setInput_5("");
+//        modelPacket0550.setInput_6("");
+//        modelPacket0550.setInput_7("");
+//        modelPacket0550.setInput_8("");
+//        modelPacket0550.setInput_9("");
+//        modelPacket0550.setInput_10("");
+//        modelPacket0550.setReserved_2("");
+//        modelPacket0550.setUrjb_1("");
+//        modelPacket0550.setUrjb_2("");
+//        modelPacket0550.setReserved_3("");
+//
+//        modelPacket0551.setPacketId(packet.PKT_0551);
+//        modelPacket0551.setLength(length.LENGTH_0004);
+//        modelPacket0551.setDestinationForReject("");
+//
+//        modelPacket052A.setPacketId(packet.PKT_052A);
+//        modelPacket052A.setLength(length.LENGTH_0004);
+//        modelPacket052A.setRecordModeAreImage("");
+//        modelPacket052A.setReserved("");
 
-        modelPacket0551.setPacketId(packet.PKT_0551);
-        modelPacket0551.setLength(length.LENGTH_0004);
-        modelPacket0551.setDestinationForReject("");
-
-        modelPacket052A.setPacketId(packet.PKT_052A);
-        modelPacket052A.setLength(length.LENGTH_0004);
-        modelPacket052A.setRecordModeAreImage("");
-        modelPacket052A.setReserved("");
-
-        returnValue = modelPacket0001.generatePacket() + modelPacket0550.generatePacket() +
-                modelPacket0551.generatePacket() + modelPacket052A.generatePacket();
+        returnValue = modelPacket0001.generatePacket();
+//                + modelPacket0550.generatePacket() +
+//                modelPacket0551.generatePacket() + modelPacket052A.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);
         returnValue = messageHeaderLength + returnValue;
@@ -129,7 +130,7 @@ public class Retract {
     public ModelPacket0585 modelPacket0585 = new ModelPacket0585();
 
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 
@@ -146,7 +147,7 @@ public class Retract {
             String messageLength = stringHelper.getSubstringData(value, startPos1, startPos1 + length1);
 
             int startPos2 = startPos1 + length1;
-            int length2 = stringHelper.getMultiplyValue(size.SIZE_5);
+            int length2 = stringHelper.getMultiplyValue(size.SIZE_6);
             String resp = stringHelper.getSubstringData(value, startPos2, startPos2 + length2);
             modelPacket0081.parsePacket(resp);
             sessionModel.saveModelToSession(context, packet.PKT_0081, modelPacket0081);

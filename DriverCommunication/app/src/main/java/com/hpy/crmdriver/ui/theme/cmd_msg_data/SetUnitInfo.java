@@ -60,15 +60,12 @@ public class SetUnitInfo {
         modelPacket0001.setLength(length.LENGTH_0004);
         modelPacket0001.setCommand(commandData.CMD_0600);//check for value
 
-//        String data_0010 = "18 06 1A 0D 11 1E".replace(" ", "");
-
         String year = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getYear());
         String month = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getMonth());
         String day = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getDay());
         String hour = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getHour());
         String minutes = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getMinute());
         String seconds = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getSecond());
-//        AppLogs.generate("year " + year + " month " + month + " day " + day + " hour " + hour + " minutes " + minutes + " seconds " + seconds);
 
         modelPacket0010.setPacketId(packet.PKT_0010);
         modelPacket0010.setLength(length.LENGTH_0008);
@@ -114,10 +111,10 @@ public class SetUnitInfo {
         modelPacket0515.setLength(length.LENGTH_0144);
         modelPacket0515.setStatus("0000");
         modelPacket0515.setInput1A("00000000000000000000000000000001");
-        modelPacket0515.setInput2A("80000000000000000000000000000000");
-        modelPacket0515.setInput3A("00080000000000000000000000000000");
-        modelPacket0515.setInput4A("00080000000000000000000000000000");
-        modelPacket0515.setInput5A("02000000000000000000000000000000");
+        modelPacket0515.setInput2A("00800000000000000000000000000000");
+        modelPacket0515.setInput3A("00400000000000000000000000000000");
+        modelPacket0515.setInput4A("08000000000000000000000000000000");
+        modelPacket0515.setInput5A("04000000000000000000000000000000");
         modelPacket0515.setInput1B("00000000000000000000000000000000");
         modelPacket0515.setInput2B("00000000000000000000000000000000");
         modelPacket0515.setInput3B("00000000000000000000000000000000");

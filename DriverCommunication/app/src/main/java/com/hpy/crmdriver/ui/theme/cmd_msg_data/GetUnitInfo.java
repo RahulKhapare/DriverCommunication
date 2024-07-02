@@ -24,6 +24,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0529;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0581;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0586;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class GetUnitInfo {
@@ -31,18 +33,28 @@ public class GetUnitInfo {
     public ModelPacket0001 modelPacket0001 = new ModelPacket0001();
     public Packet packet = new Packet();
     public Length length = new Length();
+    public AppConfig appConfig = new AppConfig();
     public CommandData commandData = new CommandData();
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
     private SessionModel sessionModel = new SessionModel();
 
 
-    public String generateCommand() {
+    public String generateCommand(Context context) {
         String returnValue = "";
+
+        String cmdType = SessionData.getStringValue(context, appConfig.GET_UNIT_INFO);
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand(commandData.CMD_0500);//check for value
+
+        if (cmdType.equals(appConfig.GET_UNIT_INFO_NORMAL)) {
+            modelPacket0001.setCommand("0500");
+        } else if (cmdType.equals(appConfig.GET_UNIT_INFO_ABNORMAL_END)) {
+            modelPacket0001.setCommand("0580");
+        } else if (cmdType.equals(appConfig.GET_UNIT_INFO_INVALID_CMD)) {
+            modelPacket0001.setCommand("05FF");
+        }
 
         returnValue = modelPacket0001.generatePacket();
 

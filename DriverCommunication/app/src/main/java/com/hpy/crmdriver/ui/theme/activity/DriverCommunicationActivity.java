@@ -23,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.hpy.crmdriver.R;
 import com.hpy.crmdriver.ui.theme.cmd_processor.CommandExecutor;
+import com.hpy.crmdriver.ui.theme.data.Packet;
+import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0081;
+import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket008E;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
 import com.hpy.crmdriver.ui.theme.util.Click;
 import com.hpy.crmdriver.ui.theme.util.DeviceDetails;
@@ -46,6 +49,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private UsbEndpoint endpointTwo;
     private UsbEndpoint endpointThree;
     private TextView txtCommunicationProcess;
+    private TextView txtExceptionData;
     private boolean isProcessCompleted = false;
 
     private CommandExecutor commandExecutor = new CommandExecutor();
@@ -53,32 +57,68 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private SessionModel sessionModel = new SessionModel();
     private SessionData sessionData = new SessionData();
 
+    private Button btnResetQuick;
+    private Button btnReboot;
+    private Button btnOpenShutterNormal;
+    private Button btnCloseShutterNormal;
+    private Button btnClearAll;
+    private Button btnGetStatus;
+    private Button btnClearSession;
+    private Button btnFirmware;
+    private Button btnSetUnitInfo;
+    private Button btnResetNormal;
+    private Button btnGetUnitInfo;
+    private Button btnPrepareTransactionDeposit;
+    private Button btnOpenShutterDeposit;
+    private Button btnCashCount;
+    private Button btnCashRollBack;
+    private Button btnStoreMoney;
+    private Button btnPrepareNextTransactionDeposit;
+    private Button btnPrepareTransactionDispense;
+    private Button btnDispense;
+    private Button btnRetract;
+    private Button btnOpenShutterDispense;
+    private Button btnCloseShutterDispense;
+    private Button btnPrepareNextTransactionDispense;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usb_communication);
 
-        //TODO - Clear Data
-        sessionData.clearAllSession(activity);
-        sessionModel.clearAllSession(activity);
-
         //Normal Process
-        Button btnResetQuick = findViewById(R.id.btnResetQuick);
-        Button btnOpenShutterNormal = findViewById(R.id.btnOpenShutterNormal);
-        Button btnCloseShutterNormal = findViewById(R.id.btnCloseShutterNormal);
+        btnResetQuick = findViewById(R.id.btnResetQuick);
+        btnReboot = findViewById(R.id.btnReboot);
+        btnOpenShutterNormal = findViewById(R.id.btnOpenShutterNormal);
+        btnCloseShutterNormal = findViewById(R.id.btnCloseShutterNormal);
+        btnClearAll = findViewById(R.id.btnClearAll);
+        btnGetStatus = findViewById(R.id.btnGetStatus);
+        btnClearSession = findViewById(R.id.btnClearSession);
 
         //Initialization Process
-        Button btnFirmware = findViewById(R.id.btnFirmware);
-        Button btnSetUnitInfo = findViewById(R.id.btnSetUnitInfo);
-        Button btnResetNormal = findViewById(R.id.btnResetNormal);
+        btnFirmware = findViewById(R.id.btnFirmware);
+        btnSetUnitInfo = findViewById(R.id.btnSetUnitInfo);
+        btnResetNormal = findViewById(R.id.btnResetNormal);
+        btnGetUnitInfo = findViewById(R.id.btnGetUnitInfo);
 
         //Deposit Process
-        Button btnPrepareTransaction = findViewById(R.id.btnPrepareTransaction);
-        Button btnOpenShutter = findViewById(R.id.btnOpenShutter);
-        Button btnCashCount = findViewById(R.id.btnCashCount);
-        Button btnStoreMoney = findViewById(R.id.btnStoreMoney);
+        btnPrepareTransactionDeposit = findViewById(R.id.btnPrepareTransactionDeposit);
+        btnOpenShutterDeposit = findViewById(R.id.btnOpenShutterDeposit);
+        btnCashCount = findViewById(R.id.btnCashCount);
+        btnCashRollBack = findViewById(R.id.btnCashRollBack);
+        btnStoreMoney = findViewById(R.id.btnStoreMoney);
+        btnPrepareNextTransactionDeposit = findViewById(R.id.btnPrepareNextTransactionDeposit);
+
+        //Dispense Process
+        btnPrepareTransactionDispense = findViewById(R.id.btnPrepareTransactionDispense);
+        btnDispense = findViewById(R.id.btnDispense);
+        btnRetract = findViewById(R.id.btnRetract);
+        btnOpenShutterDispense = findViewById(R.id.btnOpenShutterDispense);
+        btnCloseShutterDispense = findViewById(R.id.btnCloseShutterDispense);
+        btnPrepareNextTransactionDispense = findViewById(R.id.btnPrepareNextTransactionDispense);
 
         txtCommunicationProcess = findViewById(R.id.txtCommunicationProcess);
+        txtExceptionData = findViewById(R.id.txtExceptionData);
 
         usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
@@ -99,11 +139,15 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isResetQuick(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnResetQuick);
-                }
+                quickReset(btnResetQuick);
+            }
+        });
+
+        btnReboot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                reboot(btnReboot);
             }
         });
 
@@ -111,22 +155,41 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isOpenShutter(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnOpenShutterNormal);
-                }
+                openShutter(btnOpenShutterNormal);
             }
         });
         btnCloseShutterNormal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isCloseShutter(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnCloseShutterNormal);
-                }
+                closeShutter(btnCloseShutterNormal);
+            }
+        });
+
+        btnClearAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                clearAllView();
+            }
+        });
+
+        btnGetStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                getStatus(btnGetStatus);
+            }
+        });
+
+        btnClearSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                //TODO - Clear Data
+                sessionData.clearAllSession(activity);
+                sessionModel.clearAllSession(activity);
+                clearAllView();
             }
         });
 
@@ -134,11 +197,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isFirmware(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnFirmware);
-                }
+                firmware(btnFirmware);
             }
         });
 
@@ -146,11 +205,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isSetUnitInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnSetUnitInfo);
-                }
+                setUnitInfo(btnSetUnitInfo);
             }
         });
 
@@ -158,35 +213,31 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isResetNormal(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnResetNormal);
-                }
+                resetNormal(btnResetNormal);
             }
         });
 
-        btnPrepareTransaction.setOnClickListener(new View.OnClickListener() {
+        btnGetUnitInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isPrepareTransaction(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnPrepareTransaction);
-                }
+                getUnitInfo(btnGetUnitInfo);
             }
         });
 
-        btnOpenShutter.setOnClickListener(new View.OnClickListener() {
+        btnPrepareTransactionDeposit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isOpenShutter(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnOpenShutter);
-                }
+                prepareTransaction(btnPrepareTransactionDeposit);
+            }
+        });
+
+        btnOpenShutterDeposit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                openShutter(btnOpenShutterDeposit);
             }
         });
 
@@ -194,11 +245,15 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isCashCount(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnCashCount);
-                }
+                cashCount(btnCashCount);
+            }
+        });
+
+        btnCashRollBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                rollBack(btnCashRollBack);
             }
         });
 
@@ -206,25 +261,244 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                if (isProcessCompleted) {
-                    txtCommunicationProcess.setText("");
-                    boolean isSuccess = commandExecutor.isStoreMoney(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-                    getColorCode(isSuccess, btnStoreMoney);
-                }
+                storeMoney(btnStoreMoney);
+            }
+        });
+
+        btnPrepareNextTransactionDeposit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                nextTransaction();
+            }
+        });
+
+        btnPrepareTransactionDispense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prepareTransaction(btnPrepareTransactionDispense);
+            }
+        });
+
+        btnDispense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                dispense(btnDispense);
+            }
+        });
+
+        btnRetract.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                retract(btnRetract);
+            }
+        });
+
+        btnOpenShutterDispense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                openShutter(btnOpenShutterDispense);
+            }
+        });
+
+        btnCloseShutterDispense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                closeShutter(btnCloseShutterDispense);
+            }
+        });
+
+        btnPrepareNextTransactionDispense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                nextTransaction();
             }
         });
 
 
     }
 
+    private void setExceptionData() {
+
+        Packet packet = new Packet();
+        ModelPacket0081 model0081 = new ModelPacket0081();
+        ModelPacket008E model008E = new ModelPacket008E();
+        model0081 = sessionModel.getModelFromSession(activity, packet.PKT_0081, model0081.getClass());
+        model008E = sessionModel.getModelFromSession(activity, packet.PKT_008E, model008E.getClass());
+
+        if (model0081 != null) {
+//            txtExceptionData.setText("MODEL 0081 : " + model0081.getPacketId() + model0081.getLength() + model0081.getResponseCode());
+            txtExceptionData.setText("MODEL 0081 CODE : " + model0081.getResponseCode());
+        }
+
+        if (model008E != null) {
+//            txtExceptionData.setText(txtExceptionData.getText().toString() + "\n\n" +
+//                    "MODEL 008E : " + model008E.getPacketId() + model008E.getLength() + model008E.getErrorCode() +
+//                    model008E.getReserved() + model008E.getErrorCassette() + model008E.getUnitStatus()
+//                    + model008E.getRecoveryCode() + model008E.getPositionCode());
+            txtExceptionData.setText(txtExceptionData.getText().toString() + "\n\n" +
+                    "MODEL 008E CODE : " + model008E.getErrorCode());
+        }
+
+    }
+
+
+    private void getStatus(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isGetStatus(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void prepareTransaction(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isPrepareTransaction(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+
+    private void nextTransaction() {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isPrepareNextTransaction(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            if (isSuccess) {
+                clearAllView();
+            }
+        }
+    }
+
+    private void dispense(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isDispense(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void retract(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isRetract(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void openShutter(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isOpenShutter(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void cashCount(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isCashCount(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void rollBack(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isCashRollback(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void storeMoney(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isStoreMoney(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void closeShutter(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isCloseShutter(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void quickReset(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isResetQuick(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void reboot(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isReboot(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void firmware(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isFirmware(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void setUnitInfo(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isSetUnitInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void resetNormal(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isResetNormal(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void getUnitInfo(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isGetUnitInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void clearAllView() {
+        finish();
+        Intent intent = new Intent(this, DriverCommunicationActivity.class);
+        startActivity(intent);
+    }
+
 
     private void getColorCode(boolean isSuccess, Button button) {
         if (isSuccess) {
-            button.setBackgroundResource(getResources().getColor(R.color.green));
+            button.setBackgroundColor(getResources().getColor(R.color.green));
         } else {
-            button.setBackgroundResource(getResources().getColor(R.color.red));
+            button.setBackgroundColor(getResources().getColor(R.color.red));
         }
+        setExceptionData();
     }
+
+    private void setColorNormal(Button button) {
+        button.setBackgroundColor(getResources().getColor(R.color.grey));
+    }
+
 
     private void checkAutoPermission() {
         USBPermission usbPermission = new USBPermission();

@@ -10,9 +10,22 @@ public class ModelPacket0540 {
     String reserved_1;
     String noDispenseNote_1;
 
-    String roomNo_10;
-    String reserved_10;
-    String noDispenseNote_10;
+    String roomNo_2;
+    String reserved_2;
+    String noDispenseNote_2;
+
+    String roomNo_3;
+    String reserved_3;
+    String noDispenseNote_3;
+
+    String roomNo_4;
+    String reserved_4;
+    String noDispenseNote_4;
+
+    String roomNo_5;
+    String reserved_5;
+    String noDispenseNote_5;
+
     String reserved;
 
     public String getPacketId() {
@@ -55,28 +68,100 @@ public class ModelPacket0540 {
         this.noDispenseNote_1 = noDispenseNote_1;
     }
 
-    public String getRoomNo_10() {
-        return roomNo_10;
+    public String getRoomNo_2() {
+        return roomNo_2;
     }
 
-    public void setRoomNo_10(String roomNo_10) {
-        this.roomNo_10 = roomNo_10;
+    public void setRoomNo_2(String roomNo_2) {
+        this.roomNo_2 = roomNo_2;
     }
 
-    public String getReserved_10() {
-        return reserved_10;
+    public String getReserved_2() {
+        return reserved_2;
     }
 
-    public void setReserved_10(String reserved_10) {
-        this.reserved_10 = reserved_10;
+    public void setReserved_2(String reserved_2) {
+        this.reserved_2 = reserved_2;
     }
 
-    public String getNoDispenseNote_10() {
-        return noDispenseNote_10;
+    public String getNoDispenseNote_2() {
+        return noDispenseNote_2;
     }
 
-    public void setNoDispenseNote_10(String noDispenseNote_10) {
-        this.noDispenseNote_10 = noDispenseNote_10;
+    public void setNoDispenseNote_2(String noDispenseNote_2) {
+        this.noDispenseNote_2 = noDispenseNote_2;
+    }
+
+    public String getRoomNo_3() {
+        return roomNo_3;
+    }
+
+    public void setRoomNo_3(String roomNo_3) {
+        this.roomNo_3 = roomNo_3;
+    }
+
+    public String getReserved_3() {
+        return reserved_3;
+    }
+
+    public void setReserved_3(String reserved_3) {
+        this.reserved_3 = reserved_3;
+    }
+
+    public String getNoDispenseNote_3() {
+        return noDispenseNote_3;
+    }
+
+    public void setNoDispenseNote_3(String noDispenseNote_3) {
+        this.noDispenseNote_3 = noDispenseNote_3;
+    }
+
+    public String getRoomNo_4() {
+        return roomNo_4;
+    }
+
+    public void setRoomNo_4(String roomNo_4) {
+        this.roomNo_4 = roomNo_4;
+    }
+
+    public String getReserved_4() {
+        return reserved_4;
+    }
+
+    public void setReserved_4(String reserved_4) {
+        this.reserved_4 = reserved_4;
+    }
+
+    public String getNoDispenseNote_4() {
+        return noDispenseNote_4;
+    }
+
+    public void setNoDispenseNote_4(String noDispenseNote_4) {
+        this.noDispenseNote_4 = noDispenseNote_4;
+    }
+
+    public String getRoomNo_5() {
+        return roomNo_5;
+    }
+
+    public void setRoomNo_5(String roomNo_5) {
+        this.roomNo_5 = roomNo_5;
+    }
+
+    public String getReserved_5() {
+        return reserved_5;
+    }
+
+    public void setReserved_5(String reserved_5) {
+        this.reserved_5 = reserved_5;
+    }
+
+    public String getNoDispenseNote_5() {
+        return noDispenseNote_5;
+    }
+
+    public void setNoDispenseNote_5(String noDispenseNote_5) {
+        this.noDispenseNote_5 = noDispenseNote_5;
     }
 
     public String getReserved() {
@@ -88,9 +173,16 @@ public class ModelPacket0540 {
     }
 
     public String generatePacket() {
-        return packetId + length + roomNo_1 + reserved_1 + noDispenseNote_1 +
-                roomNo_10 + reserved_10 + noDispenseNote_10
-                + reserved;
+        return packetId + length +
+                //FOR XR - H
+                roomNo_1 + reserved_1 + noDispenseNote_1 +
+                roomNo_2 + reserved_2 + noDispenseNote_2 +
+                roomNo_3 + reserved_3 + noDispenseNote_3 +
+                roomNo_4 + reserved_4 + noDispenseNote_4 +
+                roomNo_5 + reserved_5 + noDispenseNote_5 +
+                //FOR XR - V
+                "0000000000000000000000000000000000000000" +
+                reserved;
     }
 
     public String parsePacket(String responseData) {

@@ -31,7 +31,7 @@ public class Reboot {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        modelPacket0001.setCommand("8000");
 
         returnValue = modelPacket0001.generatePacket();
 

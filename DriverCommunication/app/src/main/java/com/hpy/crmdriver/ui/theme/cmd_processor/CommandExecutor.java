@@ -93,104 +93,213 @@ public class CommandExecutor {
 
 
     public boolean isFirmware(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isFirmware = commandControllerProcessor.getFirmwareVersion(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-        if (isFirmware) {
+        boolean isSuccess = commandControllerProcessor.getFirmwareVersion(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.GET_FIRMWARE).equals(appConfig.SUCCESS_CODE)) {
-                isFirmware = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isFirmware;
+        return isSuccess;
     }
 
     public boolean isSetUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isSetUnitInfo = commandControllerProcessor.setUnitInfo(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-        if (isSetUnitInfo) {
+        boolean isSuccess = commandControllerProcessor.setUnitInfo(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.SET_UNIT_INFO).equals(appConfig.SUCCESS_CODE)) {
-                isSetUnitInfo = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isSetUnitInfo;
+        return isSuccess;
+    }
+
+    public boolean isGetUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.getUnitInfo(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.GET_UNIT_INFO_NORMAL, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.GET_UNIT_INFO).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
+    }
+
+    public boolean isGetStatus(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.readStatus(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.GET_UNIT_INFO).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
     }
 
     public boolean isStoreMoney(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isStoreMoney = commandControllerProcessor.storeMoney(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.STORE_MONEY_NORMAL, txtCommunicationProcess);
-        if (isStoreMoney) {
+        boolean isSuccess = commandControllerProcessor.storeMoney(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.STORE_MONEY_NORMAL, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.STORE_MONEY).equals(appConfig.SUCCESS_CODE)) {
-                isStoreMoney = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isStoreMoney;
+        return isSuccess;
     }
 
     public boolean isResetNormal(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isReset = commandControllerProcessor.reset(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.RESET_TYPE_FIRMWARE, txtCommunicationProcess);
-        if (isReset) {
+        boolean isSuccess = commandControllerProcessor.reset(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.RESET_TYPE_FIRMWARE, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.RESET).equals(appConfig.SUCCESS_CODE)) {
-                isReset = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isReset;
+        return isSuccess;
     }
 
     public boolean isResetQuick(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isReset = commandControllerProcessor.reset(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.RESET_TYPE_QUICK, txtCommunicationProcess);
-        if (isReset) {
+        boolean isSuccess = commandControllerProcessor.reset(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.RESET_TYPE_QUICK, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.RESET).equals(appConfig.SUCCESS_CODE)) {
-                isReset = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isReset;
+        return isSuccess;
     }
 
 
     public boolean isPrepareTransaction(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isPrepareTransaction = commandControllerProcessor.prepareTransaction(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.PREPARE_START_TRANSACTION, txtCommunicationProcess);
-        if (isPrepareTransaction) {
+        boolean isSuccess = commandControllerProcessor.prepareTransaction(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.PREPARE_START_TRANSACTION, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.PREPARE_TRANS).equals(appConfig.SUCCESS_CODE)) {
-                isPrepareTransaction = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isPrepareTransaction;
+        return isSuccess;
+    }
+
+    public boolean isPrepareNextTransaction(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.prepareTransaction(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.PREPARE_NEXT_TRANSACTION, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.PREPARE_TRANS).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
+    }
+
+    public boolean isDispense(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.dispense(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.DISPENSE_PER_ROOM, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.DISPENSE).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
+    }
+
+    public boolean isRetract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.retract(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.RETRACT).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
     }
 
 
     public boolean isCashCount(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isCashCount = commandControllerProcessor.cashCount(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-        if (isCashCount) {
+        boolean isSuccess = commandControllerProcessor.cashCount(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.CASH_COUNT).equals(appConfig.SUCCESS_CODE)) {
-                isCashCount = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isCashCount;
+        return isSuccess;
+    }
+
+    public boolean isCashRollback(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.cashRollback(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.CASH_ROLLBACK).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
     }
 
     public boolean isOpenShutter(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isDriveShutter_Open = commandControllerProcessor.driveShutter(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.OPEN_SHUTTER, txtCommunicationProcess);
-        if (isDriveShutter_Open) {
+        boolean isSuccess = commandControllerProcessor.driveShutter(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.OPEN_SHUTTER, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.DRIVE_SHUTTER).equals(appConfig.SUCCESS_CODE)) {
-                isDriveShutter_Open = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isDriveShutter_Open;
+        return isSuccess;
     }
 
     public boolean isCloseShutter(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isDriveShutter_Close = commandControllerProcessor.driveShutter(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.CLOSE_SHUTTER, txtCommunicationProcess);
-        if (isDriveShutter_Close) {
+        boolean isSuccess = commandControllerProcessor.driveShutter(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.CLOSE_SHUTTER, txtCommunicationProcess);
+        if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.DRIVE_SHUTTER).equals(appConfig.SUCCESS_CODE)) {
-                isDriveShutter_Close = true;
+                isSuccess = true;
+            } else {
+                isSuccess = false;
             }
         }
-        return isDriveShutter_Close;
+        return isSuccess;
+    }
+
+    public boolean isReboot(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.reboot(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.REBOOT).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
     }
 
     public String getSuccessCode0081(Context context, String cmdType) {

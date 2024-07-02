@@ -85,7 +85,7 @@ public class CommandCalculator {
         } else if (cmdType.equals(commandType.PROGRAM_DOWNLOAD)) {
             returnValue = new ProgramDownload().generateCommand();
         } else if (cmdType.equals(commandType.GET_UNIT_INFO)) {
-            returnValue = new GetUnitInfo().generateCommand();
+            returnValue = new GetUnitInfo().generateCommand(context);
         } else if (cmdType.equals(commandType.SET_UNIT_INFO)) {
             returnValue = new SetUnitInfo().generateCommand();
         } else if (cmdType.equals(commandType.RESET)) {
@@ -101,7 +101,7 @@ public class CommandCalculator {
         } else if (cmdType.equals(commandType.CASH_COUNT)) {
             returnValue = new CashCount().generateCommand();
         } else if (cmdType.equals(commandType.DISPENSE)) {
-            returnValue = new Dispense().generateCommand(appConfig.DISPENSE_PER_DENOMINATION);
+            returnValue = new Dispense().generateCommand(context);
         } else if (cmdType.equals(commandType.STORE_MONEY)) {
             returnValue = new StoreMoney().generateCommand(context);
         } else if (cmdType.equals(commandType.CASH_ROLLBACK)) {

@@ -79,11 +79,12 @@ public class CommandControllerProcessor {
         return isSuccess;
     }
 
-    public boolean getUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean getUnitInfo(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
         boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
+        SessionData.addValue(context, appConfig.GET_UNIT_INFO, cmdType);
         isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_UNIT_INFO, txtCommunicationProcess);
         return isSuccess;
     }
@@ -97,7 +98,7 @@ public class CommandControllerProcessor {
         return isSuccess;
     }
 
-    public boolean reset(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType,TextView txtCommunicationProcess) {
+    public boolean reset(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
         boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
@@ -153,11 +154,12 @@ public class CommandControllerProcessor {
         return returnValue;
     }
 
-    public boolean dispense(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean dispense(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
         boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
+        SessionData.addValue(context, appConfig.DISPENSE_VALUE, cmdType);
         isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.DISPENSE, txtCommunicationProcess);
         return isSuccess;
     }
