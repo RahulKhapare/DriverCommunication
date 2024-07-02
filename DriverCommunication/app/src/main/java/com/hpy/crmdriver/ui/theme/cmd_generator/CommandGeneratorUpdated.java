@@ -33,7 +33,7 @@ import com.hpy.crmdriver.ui.theme.session.SessionModel;
 import com.hpy.crmdriver.ui.theme.util.AppLogs;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
 
-public class CommandGenerator {
+public class CommandGeneratorUpdated {
 
     public CommandCalculator commandCalculator = new CommandCalculator();
     public ControlBulkCmdGenerator controlBulkCmdGenerator = new ControlBulkCmdGenerator();

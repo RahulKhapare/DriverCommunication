@@ -43,10 +43,10 @@ public class CommandCalculator {
 
     //0012 0000 0801 0000 0008 0001 0004 3F00 371E
 
-    public String getCommand(Context context, String commandType) {
+    public String getCommand(Context context, String commandType,boolean isNewCommandSeq) {
         String returnValue = "";
 
-        SEQ = commandSequence.getNextSeqCommand(context);
+        SEQ = commandSequence.getNextSeqCommand(context,isNewCommandSeq);
 
         AppLogs.generateTAG("CMD_SWQ", commandType + " SEQ : " + SEQ);
 
@@ -95,7 +95,7 @@ public class CommandCalculator {
         } else if (cmdType.equals(commandType.READ_STATUS)) {
             returnValue = new ReadStatus().generateCommand();
         } else if (cmdType.equals(commandType.GET_LOGS_DATA)) {
-            returnValue = new GetLogsData().generateCommand();
+            returnValue = new GetLogsData().generateCommand(context);
         } else if (cmdType.equals(commandType.CANCEL)) {
             returnValue = new Cancel().generateCommand();
         } else if (cmdType.equals(commandType.CASH_COUNT)) {

@@ -36,27 +36,92 @@ public class SetDenominationCode {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        modelPacket0001.setCommand("6400");
 
         modelPacket0513.setPacketId(packet.PKT_0513);
         modelPacket0513.setLength(length.LENGTH_0102);
-        modelPacket0513.setMode("");
-        modelPacket0513.setStatus("");
-        modelPacket0513.setDenominationCodeNoteId1("");
-        modelPacket0513.setOptionNoteId1("");
-        modelPacket0513.setDenominationCodeNoteId127("");
-        modelPacket0513.setOptionNoteId127("");
+        modelPacket0513.setMode("80");
+        modelPacket0513.setStatus("00");
 
-        modelPacket051A.setPacketId(packet.PKT_0001);
-        modelPacket051A.setLength(length.LENGTH_0102);
-        modelPacket051A.setMode("");
-        modelPacket051A.setStatus("");
-        modelPacket051A.setDenominationCodeNoteId129("");
-        modelPacket051A.setReservedNoteId129("");
-        modelPacket051A.setDenominationCodeNoteId255("");
-        modelPacket051A.setReservedNoteId255("");
+        modelPacket0513.setDenominationCodeNoteId1("01");
+        modelPacket0513.setOptionNoteId1("00");
+        modelPacket0513.setDenominationCodeNoteId2("02");
+        modelPacket0513.setOptionNoteId2("00");
+        modelPacket0513.setDenominationCodeNoteId3("00");
+        modelPacket0513.setOptionNoteId3("00");
+        modelPacket0513.setDenominationCodeNoteId4("00");
+        modelPacket0513.setOptionNoteId4("00");
+        modelPacket0513.setDenominationCodeNoteId5("01");
+        modelPacket0513.setOptionNoteId5("00");
+        modelPacket0513.setDenominationCodeNoteId6("02");
+        modelPacket0513.setOptionNoteId6("00");
+        modelPacket0513.setDenominationCodeNoteId7("00");
+        modelPacket0513.setOptionNoteId7("00");
+        modelPacket0513.setDenominationCodeNoteId8("00");
+        modelPacket0513.setOptionNoteId8("00");
 
-        returnValue = modelPacket0001.generatePacket() + modelPacket0513.generatePacket() + modelPacket051A.generatePacket();
+        modelPacket0513.setDenominationCodeNoteId9("09");
+        modelPacket0513.setOptionNoteId9("00");
+        modelPacket0513.setDenominationCodeNoteId10("0A");
+        modelPacket0513.setOptionNoteId10("00");
+        modelPacket0513.setDenominationCodeNoteId11("09");
+        modelPacket0513.setOptionNoteId11("00");
+        modelPacket0513.setDenominationCodeNoteId12("0A");
+        modelPacket0513.setOptionNoteId12("00");
+        modelPacket0513.setDenominationCodeNoteId13("00");
+        modelPacket0513.setOptionNoteId13("00");
+        modelPacket0513.setDenominationCodeNoteId14("00");
+        modelPacket0513.setOptionNoteId14("00");
+        modelPacket0513.setDenominationCodeNoteId15("00");
+        modelPacket0513.setOptionNoteId15("00");
+        modelPacket0513.setDenominationCodeNoteId16("00");
+        modelPacket0513.setOptionNoteId16("00");
+
+        modelPacket0513.setDenominationCodeNoteId17("00");
+        modelPacket0513.setOptionNoteId17("00");
+        modelPacket0513.setDenominationCodeNoteId18("00");
+        modelPacket0513.setOptionNoteId18("00");
+        modelPacket0513.setDenominationCodeNoteId19("13");
+        modelPacket0513.setOptionNoteId19("00");
+        modelPacket0513.setDenominationCodeNoteId20("14");
+        modelPacket0513.setOptionNoteId20("00");
+        modelPacket0513.setDenominationCodeNoteId21("15");
+        modelPacket0513.setOptionNoteId21("00");
+        modelPacket0513.setDenominationCodeNoteId22("16");
+        modelPacket0513.setOptionNoteId22("00");
+        modelPacket0513.setDenominationCodeNoteId23("17");
+        modelPacket0513.setOptionNoteId23("00");
+        modelPacket0513.setDenominationCodeNoteId24("00");
+        modelPacket0513.setOptionNoteId24("00");
+
+        modelPacket0513.setDenominationCodeNoteId25("00");
+        modelPacket0513.setOptionNoteId25("00");
+        modelPacket0513.setDenominationCodeNoteId26("1A");
+        modelPacket0513.setOptionNoteId26("00");
+        modelPacket0513.setDenominationCodeNoteId27("00");
+        modelPacket0513.setOptionNoteId27("00");
+        modelPacket0513.setDenominationCodeNoteId28("00");
+        modelPacket0513.setOptionNoteId28("00");
+        modelPacket0513.setDenominationCodeNoteId29("00");
+        modelPacket0513.setOptionNoteId29("00");
+        modelPacket0513.setDenominationCodeNoteId30("00");
+        modelPacket0513.setOptionNoteId30("00");
+        modelPacket0513.setDenominationCodeNoteId31("00");
+        modelPacket0513.setOptionNoteId31("00");
+        modelPacket0513.setDenominationCodeNoteId32("00");
+        modelPacket0513.setOptionNoteId32("00");
+
+//        modelPacket051A.setPacketId(packet.PKT_0001);
+//        modelPacket051A.setLength(length.LENGTH_0102);
+//        modelPacket051A.setMode("");
+//        modelPacket051A.setStatus("");
+//        modelPacket051A.setDenominationCodeNoteId129("");
+//        modelPacket051A.setReservedNoteId129("");
+//        modelPacket051A.setDenominationCodeNoteId255("");
+//        modelPacket051A.setReservedNoteId255("");
+
+        returnValue = modelPacket0001.generatePacket() + modelPacket0513.generatePacket();
+//                + modelPacket051A.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);
         returnValue = messageHeaderLength + returnValue;
@@ -67,7 +132,7 @@ public class SetDenominationCode {
     public ModelPacket008E modelPacket008E = new ModelPacket008E();
     public ModelPacket0581 modelPacket0581 = new ModelPacket0581();
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 

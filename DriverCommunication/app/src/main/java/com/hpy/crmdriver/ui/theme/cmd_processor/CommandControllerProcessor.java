@@ -126,11 +126,12 @@ public class CommandControllerProcessor {
         return isSuccess;
     }
 
-    public boolean getLogData(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean getLogData(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
         boolean isSuccess;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
+        SessionData.addValue(context, appConfig.GET_LOGS_DATA_VALUE, cmdType);
         isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.GET_LOGS_DATA, txtCommunicationProcess);
         return isSuccess;
     }

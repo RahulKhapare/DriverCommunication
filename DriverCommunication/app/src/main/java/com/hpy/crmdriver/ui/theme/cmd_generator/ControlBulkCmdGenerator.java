@@ -68,12 +68,12 @@ public class ControlBulkCmdGenerator {
         thread.start();
     }
 
-    public String commandSendingRequest(Context context, UsbDeviceConnection usbConnection, TextView textView, StringBuilder stringBuilder, int commandLength) {
+    public String commandSendingRequest(Context context, UsbDeviceConnection usbConnection,int position, TextView textView, StringBuilder stringBuilder, int commandLength) {
         String returnValue = "";
 
         int reqType = 0xC2;
 //        int req = 0x00;
-        int req = commandSequence.getNextSeqCmdSendingReq(context);
+        int req = commandSequence.getNextSeqCmdSendingReq(context,position);
 //        int value = 0x1200;
 //        int value = 0x0012;
         int value = commandLength;

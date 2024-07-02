@@ -32,7 +32,7 @@ public class GetCassetteInfo {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        modelPacket0001.setCommand("6300");
 
         returnValue = modelPacket0001.generatePacket();
 
@@ -46,7 +46,7 @@ public class GetCassetteInfo {
     public ModelPacket0581 modelPacket0581 = new ModelPacket0581();
     public ModelPacket058E modelPacket058E = new ModelPacket058E();
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 

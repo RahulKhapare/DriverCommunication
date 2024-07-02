@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -67,6 +68,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private Button btnFirmware;
     private Button btnSetUnitInfo;
     private Button btnResetNormal;
+    private Button btnSetDenominationCode;
     private Button btnGetUnitInfo;
     private Button btnPrepareTransactionDeposit;
     private Button btnOpenShutterDeposit;
@@ -80,6 +82,11 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private Button btnOpenShutterDispense;
     private Button btnCloseShutterDispense;
     private Button btnPrepareNextTransactionDispense;
+    private Button btnProgramDownload;
+    private Button btnLogsData;
+    private Button btnCancel;
+    private Button btnGetBankNotesInfo;
+    private Button btnGetCassetteInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +101,13 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         btnClearAll = findViewById(R.id.btnClearAll);
         btnGetStatus = findViewById(R.id.btnGetStatus);
         btnClearSession = findViewById(R.id.btnClearSession);
+        btnGetUnitInfo = findViewById(R.id.btnGetUnitInfo);
 
         //Initialization Process
         btnFirmware = findViewById(R.id.btnFirmware);
         btnSetUnitInfo = findViewById(R.id.btnSetUnitInfo);
         btnResetNormal = findViewById(R.id.btnResetNormal);
-        btnGetUnitInfo = findViewById(R.id.btnGetUnitInfo);
+        btnSetDenominationCode = findViewById(R.id.btnSetDenominationCode);
 
         //Deposit Process
         btnPrepareTransactionDeposit = findViewById(R.id.btnPrepareTransactionDeposit);
@@ -116,6 +124,13 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         btnOpenShutterDispense = findViewById(R.id.btnOpenShutterDispense);
         btnCloseShutterDispense = findViewById(R.id.btnCloseShutterDispense);
         btnPrepareNextTransactionDispense = findViewById(R.id.btnPrepareNextTransactionDispense);
+
+        //Others
+        btnProgramDownload = findViewById(R.id.btnProgramDownload);
+        btnLogsData = findViewById(R.id.btnLogsData);
+        btnCancel = findViewById(R.id.btnCancel);
+        btnGetBankNotesInfo = findViewById(R.id.btnGetBankNotesInfo);
+        btnGetCassetteInfo = findViewById(R.id.btnGetCassetteInfo);
 
         txtCommunicationProcess = findViewById(R.id.txtCommunicationProcess);
         txtExceptionData = findViewById(R.id.txtExceptionData);
@@ -134,7 +149,11 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         registerReceiver(usbReceiver, filter);
 
         checkForExistingDevices();
+        clickListeners();
 
+    }
+
+    private void clickListeners() {
         btnResetQuick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,6 +220,13 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             }
         });
 
+        btnSetDenominationCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                setDenominationCode(btnSetDenominationCode);
+            }
+        });
         btnSetUnitInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,7 +295,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                nextTransaction();
+                nextTransaction(btnPrepareNextTransactionDeposit);
             }
         });
 
@@ -316,10 +342,49 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                nextTransaction();
+                nextTransaction(btnPrepareNextTransactionDispense);
             }
         });
 
+        btnProgramDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                programDownload(btnProgramDownload);
+            }
+        });
+
+        btnLogsData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                getLogsData(btnLogsData);
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                cancel(btnCancel);
+            }
+        });
+
+        btnGetBankNotesInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                getBankNoteInfo(btnGetBankNotesInfo);
+            }
+        });
+
+        btnGetCassetteInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                getCassetteNoteInfo(btnGetCassetteInfo);
+            }
+        });
 
     }
 
@@ -344,7 +409,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             txtExceptionData.setText(txtExceptionData.getText().toString() + "\n\n" +
                     "MODEL 008E CODE : " + model008E.getErrorCode());
         }
-
     }
 
 
@@ -365,13 +429,11 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     }
 
 
-    private void nextTransaction() {
+    private void nextTransaction(Button button) {
         if (isProcessCompleted) {
             txtCommunicationProcess.setText("");
             boolean isSuccess = commandExecutor.isPrepareNextTransaction(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
-            if (isSuccess) {
-                clearAllView();
-            }
+            getColorCode(isSuccess, button);
         }
     }
 
@@ -455,6 +517,14 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         }
     }
 
+    private void setDenominationCode(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isSetDenominationCode(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
     private void setUnitInfo(Button button) {
         if (isProcessCompleted) {
             txtCommunicationProcess.setText("");
@@ -475,6 +545,45 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         if (isProcessCompleted) {
             txtCommunicationProcess.setText("");
             boolean isSuccess = commandExecutor.isGetUnitInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void programDownload(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            Toast.makeText(activity, "Under process, don't use.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void cancel(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isCancel(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void getLogsData(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isLogsData(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+
+    private void getBankNoteInfo(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isBankNoteInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+    private void getCassetteNoteInfo(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isCassetteNoteInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
     }

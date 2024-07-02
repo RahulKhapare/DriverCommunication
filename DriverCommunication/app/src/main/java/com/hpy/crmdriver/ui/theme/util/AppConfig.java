@@ -62,5 +62,10 @@ public class AppConfig {
     public String GET_UNIT_INFO_ABNORMAL_END = "GET_UNIT_INFO_ABNORMAL_END";
     public String GET_UNIT_INFO_INVALID_CMD = "GET_UNIT_INFO_INVALID_CMD";
 
+    public String GET_LOGS_DATA_VALUE = "GET_LOGS_DATA_VALUE";
+    public String GET_LOGS_DATA = "GET_LOGS_DATA";
+    public String GET_ERASE_ALL_LOGS_DATA = "GET_ERASE_ALL_LOGS_DATA";
+
+
 
 }

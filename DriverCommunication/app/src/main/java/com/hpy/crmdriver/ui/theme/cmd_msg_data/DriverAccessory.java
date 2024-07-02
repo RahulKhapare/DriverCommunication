@@ -34,7 +34,7 @@ public class DriverAccessory {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        modelPacket0001.setCommand("0A00");
 
         modelPacket0526.setPacketId(packet.PKT_0526);
         modelPacket0526.setLength(length.LENGTH_0004);
@@ -52,7 +52,7 @@ public class DriverAccessory {
     public ModelPacket008E modelPacket008E = new ModelPacket008E();
     public ModelPacket0581 modelPacket0581 = new ModelPacket0581();
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 

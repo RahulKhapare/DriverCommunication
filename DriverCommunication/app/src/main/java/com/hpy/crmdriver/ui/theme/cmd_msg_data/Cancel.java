@@ -24,7 +24,7 @@ public class Cancel {
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        modelPacket0001.setCommand("0F10");
 
         returnValue = modelPacket0001.generatePacket();
 
@@ -33,7 +33,7 @@ public class Cancel {
         return returnValue;
     }
 
-    public String parseCommandResponse(Context context,String responseData) {
+    public String parseCommandResponse(Context context, String responseData) {
         String returnValue = "";
 
         return returnValue;

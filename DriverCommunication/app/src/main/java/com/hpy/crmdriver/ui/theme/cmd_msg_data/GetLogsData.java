@@ -15,6 +15,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket008E;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0525;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0581;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class GetLogsData {
@@ -28,26 +30,39 @@ public class GetLogsData {
     public CommandData commandData = new CommandData();
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
+    public AppConfig appConfig = new AppConfig();
     private SessionModel sessionModel = new SessionModel();
 
 
-    public String generateCommand() {
+    public String generateCommand(Context context) {
         String returnValue = "";
+
+        String cmdType = SessionData.getStringValue(context, appConfig.GET_LOGS_DATA_VALUE);
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("");
+        if (cmdType.equals(appConfig.GET_LOGS_DATA)) {
+            modelPacket0001.setCommand("0D00");
+        } else if (cmdType.equals(appConfig.GET_ERASE_ALL_LOGS_DATA)) {
+            modelPacket0001.setCommand("0D01");
+        }
+
 
         modelPacket0002.setPacketId(packet.PKT_0002);
         modelPacket0002.setLength(length.LENGTH_0004);
-        modelPacket0002.setAct("");
+        if (cmdType.equals(appConfig.GET_LOGS_DATA)) {
+            modelPacket0002.setAct("0300");  //$0300 - $0303
+        } else if (cmdType.equals(appConfig.GET_ERASE_ALL_LOGS_DATA)) {
+            modelPacket0002.setAct("FFFF");
+        }
 
-        modelPacket0525.setPacketId(packet.PKT_0525);
-        modelPacket0525.setLength(length.LENGTH_0004);
-        modelPacket0525.setYear("");
-        modelPacket0525.setMonth("");
+//        modelPacket0525.setPacketId(packet.PKT_0525);
+//        modelPacket0525.setLength(length.LENGTH_0004);
+//        modelPacket0525.setYear("");
+//        modelPacket0525.setMonth("");
 
-        returnValue = modelPacket0001.generatePacket() + modelPacket0002.generatePacket() + modelPacket0525.generatePacket();
+        returnValue = modelPacket0001.generatePacket() + modelPacket0002.generatePacket();
+//                + modelPacket0525.generatePacket();
 
         String messageHeaderLength = messageDataLengthGenerator.getMessageHeaderLength(returnValue);
         returnValue = messageHeaderLength + returnValue;
@@ -60,7 +75,7 @@ public class GetLogsData {
 
     //Missing - 05F0,05F1,05F2,05F3,05F4,05F5,05F6,05F7
 
-    public void parseCommandResponse(Context context,String responseData) {
+    public void parseCommandResponse(Context context, String responseData) {
         String value = responseData;
         StringHelper stringHelper = new StringHelper();
 

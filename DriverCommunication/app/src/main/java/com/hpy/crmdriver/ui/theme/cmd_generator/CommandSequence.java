@@ -8,19 +8,30 @@ import com.hpy.crmdriver.ui.theme.util.SessionData;
 
 public class CommandSequence {
 
-    public String getNextSeqCommand(Context context) {
+    public String getNextSeqCommand(Context context, boolean isNewCommandSeq) {
         // Convert the previous value to an integer
         String previousValue = SessionData.getStringValue(context, KeyValue.CMD_SEQ);
+        int intValue;
+
         if (TextUtils.isEmpty(previousValue)) {
             previousValue = "00";
+            intValue = Integer.parseInt(previousValue, 16);
+        } else {
+            intValue = Integer.parseInt(previousValue, 16);
+            // Increment the integer value
+            if (isNewCommandSeq) {
+                intValue++;
+            } else {
+                previousValue = "00";
+                intValue = Integer.parseInt(previousValue, 16);
+            }
         }
-        int intValue = Integer.parseInt(previousValue, 16);
-        // Increment the integer value
-        intValue++;
+
         // Reset to 0 if it reaches 16
         if (intValue == 16) {
             intValue = 0;
         }
+
         // Convert the integer back to hexadecimal format
         String nextHexValue = String.format("%02X", intValue);
         SessionData.addValue(context, KeyValue.CMD_SEQ, nextHexValue);
@@ -28,7 +39,7 @@ public class CommandSequence {
         return nextHexValue;
     }
 
-    public int getNextSeqCmdSendingReq(Context context) {
+    public int getNextSeqCmdSendingReq(Context context, int position) {
         // Retrieve the previous value stored in session data
         String previousValue = SessionData.getStringValue(context, KeyValue.CMD_SEND_REQ);
 
@@ -44,9 +55,10 @@ public class CommandSequence {
         int intValue = Integer.parseInt(previousValue, 16);
 
         // Increment the integer value
-        if (isUpdate) {
+        if (isUpdate && position == 0) {
             intValue++;
         }
+
 
         // Reset to 0 if it reaches 0F
         if (intValue > 0x0F) {
@@ -115,12 +127,13 @@ public class CommandSequence {
         int intValue = Integer.parseInt(previousValue, 16);
 
         // Increment the integer value
-        if (isUpdate) {
-            if (totalCount <= 3) {
-                //do nothing
-            } else {
-                intValue++;
-            }
+        if (isUpdate && totalCount == 0) {
+//            if (totalCount <= 3) {
+//                //do nothing
+//            } else {
+//                intValue++;
+//            }
+            intValue++;
         }
 
 
@@ -155,12 +168,13 @@ public class CommandSequence {
         int intValue = Integer.parseInt(previousValue, 16);
 
         // Increment the integer value
-        if (isUpdate) {
-            if (totalCount < 3) {
-                //do nothing
-            } else {
-                intValue++;
-            }
+        if (isUpdate && totalCount == 0) {
+            intValue++;
+//            if (totalCount < 3) {
+//                //do nothing
+//            } else {
+//                intValue++;
+//            }
         }
 
         // Reset to 0x90 if it reaches 0x9F
