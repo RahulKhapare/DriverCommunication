@@ -19,6 +19,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ToggleButton
+                android:id="@+id/btnToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="TEST"
+                android:textOn="LIVE" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="RESET QUICK (0720)"></Button>
 
@@ -54,7 +61,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="REBOOT (8000)"></Button>
 
@@ -66,7 +73,7 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="OPEN SHUTTER (5801)"></Button>
 
@@ -76,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="CLOSE SHUTTER (5800)"></Button>
 
@@ -96,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="GET STATUS (0C00)"></Button>
 
@@ -107,7 +114,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="GET UNIT INFO (0500)"></Button>
 
@@ -118,9 +125,9 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
-                    android:text="CLEAR ALL"></Button>
+                    android:text="CLEAR VIEW"></Button>
 
                 <Button
                     android:id="@+id/btnClearSession"
@@ -128,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="CLEAR SESSION"></Button>
 
@@ -157,7 +164,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="1-FIRMWARE (0305)"></Button>
 
@@ -167,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="2-SET DENOMINATION CODE (6400)"></Button>
 
@@ -178,7 +185,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="3-SET UNIT INFO (0600)"></Button>
 
@@ -188,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="4-RESET (0700)"></Button>
 
@@ -218,7 +225,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="1-START TRANSACTION (6001)"></Button>
 
@@ -229,7 +236,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="2-OPEN SHUTTER (5801)"></Button>
 
@@ -238,7 +245,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="3-CASH COUNT (1000-1900)"></Button>
 
@@ -255,7 +262,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="4-CASH ROLLBACK (3100-3900)"></Button>
 
@@ -266,7 +273,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="5-STORE MONEY (3000-3F00)"></Button>
 
@@ -275,7 +282,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="6-END TRANSACTION (6001)"></Button>
             </LinearLayout>
@@ -304,7 +311,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="1-START TRANSACTION (6001)"></Button>
 
@@ -316,7 +323,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="2-DISPENSE (2000-2F00)"></Button>
 
@@ -325,9 +332,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
-                    android:text="3-RETRACT (4000,4F00)"></Button>
+                    android:text="3-RETRACT (40A0,4FA0)"></Button>
 
             </LinearLayout>
 
@@ -342,7 +349,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="4-OPEN SHUTTER (5801)"></Button>
 
@@ -353,7 +360,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="5-CLOSE SHUTTER (5800)"></Button>
 
@@ -363,7 +370,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="6-END TRANSACTION (6001)"></Button>
 
@@ -391,7 +398,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="PROGRAM DOWNLOAD"></Button>
 
@@ -402,7 +409,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="CANCEL"></Button>
 
@@ -412,7 +419,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="GET LOGS DATA"></Button>
 
@@ -430,7 +437,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="GET BANK NOTE INFO"></Button>
 
@@ -441,7 +448,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="GET CASSETTE INFO"></Button>
 
@@ -449,7 +456,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/grey"
+                    android:background="@drawable/button_press_effect"
                     android:padding="16dp"
                     android:text="GET CASSETTE INFO"
                     android:visibility="invisible"></Button>
@@ -459,6 +466,17 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/txtExceptionData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold">
+
+        </TextView>
+
 
         <TextView
             android:layout_width="match_parent"
@@ -467,18 +485,6 @@
             android:text="USB Communication Process"
             android:textColor="@color/black"
             android:textSize="24sp"
-            android:textStyle="bold">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/txtExceptionData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="USB Communication Process"
-            android:textColor="@color/black"
             android:textStyle="bold">
 
         </TextView>

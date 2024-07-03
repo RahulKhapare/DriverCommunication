@@ -40,6 +40,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D1;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D2;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D3;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class Retract {
@@ -57,13 +59,42 @@ public class Retract {
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
     private SessionModel sessionModel = new SessionModel();
+    public AppConfig appConfig = new AppConfig();
 
-    public String generateCommand() {
+    public String generateCommand(Context context) {
         String returnValue = "";
+
+        String appMode = SessionData.getStringValue(context, appConfig.APP_MODE_VALUE);
+        String amdType = SessionData.getStringValue(context, appConfig.RETRACT_VALUE);
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("4FA0");
+
+        if (amdType.equalsIgnoreCase(appConfig.RETRACT_CS)) {
+            if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+                modelPacket0001.setCommand("4010");
+            } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+                modelPacket0001.setCommand("4F10");
+            }
+        } else if (amdType.equalsIgnoreCase(appConfig.RETRACT_ESC)) {
+            if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+                modelPacket0001.setCommand("4020");
+            } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+                modelPacket0001.setCommand("4F20");
+            }
+        } else if (amdType.equalsIgnoreCase(appConfig.RETRACT_ESC_CS)) {
+            if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+                modelPacket0001.setCommand("4030");
+            } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+                modelPacket0001.setCommand("4F30");
+            }
+        } else if (amdType.equalsIgnoreCase(appConfig.RETRACT_ESC_DISPENSE_REJECT)) {
+            if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+                modelPacket0001.setCommand("40A0");
+            } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+                modelPacket0001.setCommand("4FA0");
+            }
+        }
 
 //        modelPacket0550.setPacketId(packet.PKT_0550);
 //        modelPacket0550.setLength(length.LENGTH_0022);

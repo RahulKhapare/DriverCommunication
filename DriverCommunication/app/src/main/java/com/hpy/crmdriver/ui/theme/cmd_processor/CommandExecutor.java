@@ -237,7 +237,7 @@ public class CommandExecutor {
     }
 
     public boolean isRetract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isSuccess = commandControllerProcessor.retract(context, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        boolean isSuccess = commandControllerProcessor.retract(context, usbConnection, endpointOne, endpointTwo, endpointThree,appConfig.RETRACT_ESC_DISPENSE_REJECT, txtCommunicationProcess);
         if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.RETRACT).equals(appConfig.SUCCESS_CODE)) {

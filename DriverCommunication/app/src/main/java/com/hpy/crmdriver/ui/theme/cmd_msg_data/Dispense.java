@@ -87,9 +87,16 @@ public class Dispense {
     public String getDispensePerDenomination(Context context) {
         String returnValue = "";
 
+        String appMode = SessionData.getStringValue(context, appConfig.APP_MODE_VALUE);
+
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("2F01");//TEST
+
+        if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+            modelPacket0001.setCommand("2001");
+        } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+            modelPacket0001.setCommand("2F01");
+        }
 
         modelPacket0541.setPacketId(packet.PKT_0541);
         modelPacket0541.setLength(length.LENGTH_0032);
@@ -148,9 +155,16 @@ public class Dispense {
     public String getDispensePerRoom(Context context) {
         String returnValue = "";
 
+        String appMode = SessionData.getStringValue(context, appConfig.APP_MODE_VALUE);
+
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand("2F11");//TEST
+
+        if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+            modelPacket0001.setCommand("2F11");
+        } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+            modelPacket0001.setCommand("2011");
+        }
 
         modelPacket0540.setPacketId(packet.PKT_0540);
         modelPacket0540.setLength(length.LENGTH_0032);
@@ -159,17 +173,17 @@ public class Dispense {
         modelPacket0540.setReserved_1("00");
         modelPacket0540.setNoDispenseNote_1("0001");
 
-        modelPacket0540.setRoomNo_2("00");
+        modelPacket0540.setRoomNo_2("3A");
         modelPacket0540.setReserved_2("00");
-        modelPacket0540.setNoDispenseNote_2("0000");
+        modelPacket0540.setNoDispenseNote_2("0001");
 
-        modelPacket0540.setRoomNo_3("00");
+        modelPacket0540.setRoomNo_3("4A");
         modelPacket0540.setReserved_3("00");
-        modelPacket0540.setNoDispenseNote_3("0000");
+        modelPacket0540.setNoDispenseNote_3("0001");
 
-        modelPacket0540.setRoomNo_4("00");
+        modelPacket0540.setRoomNo_4("5A");
         modelPacket0540.setReserved_4("00");
-        modelPacket0540.setNoDispenseNote_4("0000");
+        modelPacket0540.setNoDispenseNote_4("0001");
 
         modelPacket0540.setRoomNo_5("00");
         modelPacket0540.setReserved_5("00");

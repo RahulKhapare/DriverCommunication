@@ -13,12 +13,16 @@ import com.hpy.crmdriver.ui.theme.cmd_generator.ControlBulkCmdGenerator;
 import com.hpy.crmdriver.ui.theme.interrupt_formatter.InterruptFormatter;
 import com.hpy.crmdriver.ui.theme.util.AppConfig;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
+import com.hpy.crmdriver.ui.theme.util.TimeOut;
 
 public class CommandControllerProcessor {
 
+    //    public CommandGeneratorUpdated commandGenerator = new CommandGeneratorUpdated();
     public CommandGenerator commandGenerator = new CommandGenerator();
+
     public CommandType commandType = new CommandType();
     public AppConfig appConfig = new AppConfig();
+    public TimeOut timeOut = new TimeOut();
     public InterruptFormatter interruptFormatter = new InterruptFormatter();
     public ControlBulkCmdGenerator controlBulkCmdGenerator = new ControlBulkCmdGenerator();
 
@@ -27,7 +31,7 @@ public class CommandControllerProcessor {
         if (!appConfig.IS_CHECKING_INTERRUPT) {
             String deviceDescriptorDetails = controlBulkCmdGenerator.deviceDescriptorData(usbConnection, txtCommunicationProcess);
             if (!TextUtils.isEmpty(deviceDescriptorDetails)) {
-                controlBulkCmdGenerator.readInterruptData(context, usbConnection, endpointThree, appConfig.MILI_100);
+                controlBulkCmdGenerator.readInterruptData(context, usbConnection, endpointThree, timeOut.TIMEOUT_M_100);
                 returnValue = true;
                 appConfig.IS_CHECKING_INTERRUPT = returnValue;
             } else {
@@ -42,7 +46,7 @@ public class CommandControllerProcessor {
         checkBlockInBinary(context);
 
         try {
-            Thread.sleep(appConfig.MILI_100);
+            Thread.sleep(timeOut.TIMEOUT_M_100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -184,11 +188,12 @@ public class CommandControllerProcessor {
         return isSuccess;
     }
 
-    public boolean retract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean retract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree,String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
         boolean returnValue;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
+        SessionData.addValue(context, appConfig.RETRACT_VALUE, cmdType);
         returnValue = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.RETRACT, txtCommunicationProcess);
         return returnValue;
     }

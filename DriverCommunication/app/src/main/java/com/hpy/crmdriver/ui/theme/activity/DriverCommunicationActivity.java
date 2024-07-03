@@ -14,20 +14,27 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hpy.crmdriver.MainActivity;
 import com.hpy.crmdriver.R;
 import com.hpy.crmdriver.ui.theme.cmd_processor.CommandExecutor;
 import com.hpy.crmdriver.ui.theme.data.Packet;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0081;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket008E;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
 import com.hpy.crmdriver.ui.theme.util.Click;
 import com.hpy.crmdriver.ui.theme.util.DeviceDetails;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
@@ -87,11 +94,27 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private Button btnCancel;
     private Button btnGetBankNotesInfo;
     private Button btnGetCassetteInfo;
+    private ToggleButton btnToggle;
+
+    private AppConfig appConfig = new AppConfig();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usb_communication);
+
+        btnToggle = findViewById(R.id.btnToggle);
+        setModeCheck();
+        btnToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    SessionData.addValue(activity, appConfig.APP_MODE_VALUE, appConfig.APP_MODE_LIVE);
+                } else {
+                    SessionData.addValue(activity, appConfig.APP_MODE_VALUE, appConfig.APP_MODE_TEST);
+                }
+            }
+        });
 
         //Normal Process
         btnResetQuick = findViewById(R.id.btnResetQuick);
@@ -153,11 +176,24 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     }
 
+    private void setModeCheck() {
+        String getAppModeType = SessionData.getStringValue(activity, appConfig.APP_MODE_VALUE);
+        if (TextUtils.isEmpty(getAppModeType)) {
+            SessionData.addValue(activity, appConfig.APP_MODE_VALUE, appConfig.APP_MODE_TEST);
+            btnToggle.setChecked(false);
+        } else if (getAppModeType.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+            btnToggle.setChecked(false);
+        } else if (getAppModeType.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+            btnToggle.setChecked(true);
+        }
+    }
+
     private void clickListeners() {
         btnResetQuick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnResetQuick);
                 quickReset(btnResetQuick);
             }
         });
@@ -166,6 +202,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnReboot);
                 reboot(btnReboot);
             }
         });
@@ -174,6 +211,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnOpenShutterNormal);
                 openShutter(btnOpenShutterNormal);
             }
         });
@@ -181,6 +219,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnCloseShutterNormal);
                 closeShutter(btnCloseShutterNormal);
             }
         });
@@ -189,6 +228,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnClearAll);
                 clearAllView();
             }
         });
@@ -197,7 +237,17 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnGetStatus);
                 getStatus(btnGetStatus);
+            }
+        });
+
+        btnGetUnitInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                setAnimation(btnGetUnitInfo);
+                getUnitInfo(btnGetUnitInfo);
             }
         });
 
@@ -205,10 +255,11 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnClearSession);
                 //TODO - Clear Data
                 sessionData.clearAllSession(activity);
                 sessionModel.clearAllSession(activity);
-                clearAllView();
+                setModeCheck();
             }
         });
 
@@ -216,6 +267,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnFirmware);
                 firmware(btnFirmware);
             }
         });
@@ -224,6 +276,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnSetDenominationCode);
                 setDenominationCode(btnSetDenominationCode);
             }
         });
@@ -231,6 +284,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnSetUnitInfo);
                 setUnitInfo(btnSetUnitInfo);
             }
         });
@@ -239,15 +293,8 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnResetNormal);
                 resetNormal(btnResetNormal);
-            }
-        });
-
-        btnGetUnitInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Click.preventTwoClick(v);
-                getUnitInfo(btnGetUnitInfo);
             }
         });
 
@@ -255,6 +302,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnPrepareTransactionDeposit);
                 prepareTransaction(btnPrepareTransactionDeposit);
             }
         });
@@ -263,6 +311,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnOpenShutterDeposit);
                 openShutter(btnOpenShutterDeposit);
             }
         });
@@ -271,6 +320,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnCashCount);
                 cashCount(btnCashCount);
             }
         });
@@ -279,6 +329,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnCashRollBack);
                 rollBack(btnCashRollBack);
             }
         });
@@ -287,6 +338,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnStoreMoney);
                 storeMoney(btnStoreMoney);
             }
         });
@@ -295,6 +347,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnPrepareNextTransactionDeposit);
                 nextTransaction(btnPrepareNextTransactionDeposit);
             }
         });
@@ -302,6 +355,8 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         btnPrepareTransactionDispense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Click.preventTwoClick(v);
+                setAnimation(btnPrepareTransactionDispense);
                 prepareTransaction(btnPrepareTransactionDispense);
             }
         });
@@ -310,6 +365,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnDispense);
                 dispense(btnDispense);
             }
         });
@@ -318,6 +374,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnRetract);
                 retract(btnRetract);
             }
         });
@@ -326,6 +383,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnOpenShutterDispense);
                 openShutter(btnOpenShutterDispense);
             }
         });
@@ -334,6 +392,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnCloseShutterDispense);
                 closeShutter(btnCloseShutterDispense);
             }
         });
@@ -342,6 +401,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnPrepareNextTransactionDispense);
                 nextTransaction(btnPrepareNextTransactionDispense);
             }
         });
@@ -350,6 +410,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnProgramDownload);
                 programDownload(btnProgramDownload);
             }
         });
@@ -358,6 +419,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnLogsData);
                 getLogsData(btnLogsData);
             }
         });
@@ -366,6 +428,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnCancel);
                 cancel(btnCancel);
             }
         });
@@ -374,6 +437,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnGetBankNotesInfo);
                 getBankNoteInfo(btnGetBankNotesInfo);
             }
         });
@@ -382,6 +446,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
+                setAnimation(btnGetCassetteInfo);
                 getCassetteNoteInfo(btnGetCassetteInfo);
             }
         });
@@ -580,6 +645,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             getColorCode(isSuccess, button);
         }
     }
+
     private void getCassetteNoteInfo(Button button) {
         if (isProcessCompleted) {
             txtCommunicationProcess.setText("");
@@ -597,11 +663,16 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void getColorCode(boolean isSuccess, Button button) {
         if (isSuccess) {
-            button.setBackgroundColor(getResources().getColor(R.color.green));
+            button.setBackground(getResources().getDrawable(R.drawable.button_green_bg));
         } else {
-            button.setBackgroundColor(getResources().getColor(R.color.red));
+            button.setBackground(getResources().getDrawable(R.drawable.button_red_bg));
         }
         setExceptionData();
+    }
+
+    private void setAnimation(Button button) {
+//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
+//        button.startAnimation(animation);
     }
 
     private void setColorNormal(Button button) {

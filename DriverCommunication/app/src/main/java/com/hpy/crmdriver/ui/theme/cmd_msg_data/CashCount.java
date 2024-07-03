@@ -39,6 +39,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D2;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05D3;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket05DB;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
+import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class CashCount {
@@ -57,16 +59,23 @@ public class CashCount {
     public CommandData commandData = new CommandData();
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
+    public AppConfig appConfig = new AppConfig();
     private SessionModel sessionModel = new SessionModel();
 
 
-    public String generateCommand() {
+    public String generateCommand(Context context) {
         String returnValue = "";
+
+        String appMode = SessionData.getStringValue(context, appConfig.APP_MODE_VALUE);
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-//        modelPacket0001.setCommand("1000");//Actual Cash
-        modelPacket0001.setCommand("1900");//Test Cash
+
+        if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+            modelPacket0001.setCommand("1000");
+        } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+            modelPacket0001.setCommand("1900");
+        }
 
 //        modelPacket0517.setPacketId(packet.PKT_0517);
 //        modelPacket0517.setLength(length.LENGTH_0014);

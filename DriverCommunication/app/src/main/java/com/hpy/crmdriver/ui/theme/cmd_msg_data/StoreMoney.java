@@ -65,17 +65,30 @@ public class StoreMoney {
     public String generateCommand(Context context) {
         String returnValue = "";
 
+        String appMode = SessionData.getStringValue(context, appConfig.APP_MODE_VALUE);
         String cmdType = SessionData.getStringValue(context, appConfig.STORE_MONEY_VALUE);
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
 
         if (cmdType.equals(appConfig.STORE_MONEY_NORMAL)) {
-            modelPacket0001.setCommand("3F00");//Test Cash
+            if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+                modelPacket0001.setCommand("3000");
+            } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+                modelPacket0001.setCommand("3F00");
+            }
         } else if (cmdType.equals(appConfig.STORE_MONEY_WITHOUT_CS_CHECK)) {
-            modelPacket0001.setCommand("3F01");//Test Cash
+            if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+                modelPacket0001.setCommand("3001");
+            } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+                modelPacket0001.setCommand("3F01");
+            }
         } else if (cmdType.equals(appConfig.STORE_MONEY_FOR_LOADING)) {
-            modelPacket0001.setCommand("3F10");//Test Cash
+            if (appMode.equalsIgnoreCase(appConfig.APP_MODE_LIVE)) {
+                modelPacket0001.setCommand("3010");
+            } else if (appMode.equalsIgnoreCase(appConfig.APP_MODE_TEST)) {
+                modelPacket0001.setCommand("3F10");
+            }
         }
 
 //        modelPacket0550.setPacketId(packet.PKT_0550);

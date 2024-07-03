@@ -25,6 +25,7 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0586;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
 import com.hpy.crmdriver.ui.theme.util.AppLogs;
 import com.hpy.crmdriver.ui.theme.util.DateCalculator;
+import com.hpy.crmdriver.ui.theme.util.SetNoteInfo;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class SetUnitInfo {
@@ -56,6 +57,8 @@ public class SetUnitInfo {
     public String generateCommand() {
         String returnValue = "";
 
+        SetNoteInfo setNoteInfo = new SetNoteInfo();
+
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
         modelPacket0001.setCommand(commandData.CMD_0600);//check for value
@@ -76,45 +79,32 @@ public class SetUnitInfo {
         modelPacket0010.setMinutes(minutes);
         modelPacket0010.setSeconds(seconds);
 
-//        String data_0511 = "0000 000000FF".replace(" ", "");
         modelPacket0511.setPacketId(packet.PKT_0511);
         modelPacket0511.setLength(length.LENGTH_0008);
         modelPacket0511.setStatus("0000");
         modelPacket0511.setOperationalInfo("000000FF");
 
-//        String data_0510 = "0000 00000020000000008000000000000000".replace(" ", "");
         modelPacket0510.setPacketId(packet.PKT_0510);
         modelPacket0510.setLength(length.LENGTH_0014);
         modelPacket0510.setStatus("0000");
         modelPacket0510.setOperationalInfo("00000020000000008000000000000000");
 
-//        String data_0512 = "0000 80091F00".replace(" ", "");
         modelPacket0512.setPacketId(packet.PKT_0512);
         modelPacket0512.setLength(length.LENGTH_0008);
         modelPacket0512.setStatus("0000");
         modelPacket0512.setHardwareConfig("80091F00");
 
-//        String data_0515 = "0000 " +
-//                "00000000000000000000000000000001" +//1A
-//                "80000000000000000000000000000000" +//2A
-//                "00080000000000000000000000000000" +//3A
-//                "08000000000000000000000000000000" +//4A
-//                "02000000000000000000000000000000" +//5A
-//                "00000000000000000000000000000000" +//1B
-//                "00000000000000000000000000000000" +//2B
-//                "00000000000000000000000000000000" +//3B
-//                "00000000000000000000000000000000" +//4B
-//                "00000000000000000000000000000000" +//5B
-//                "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-
         modelPacket0515.setPacketId(packet.PKT_0515);
         modelPacket0515.setLength(length.LENGTH_0144);
         modelPacket0515.setStatus("0000");
-        modelPacket0515.setInput1A("00000000000000000000000000000001");
-        modelPacket0515.setInput2A("00800000000000000000000000000000");
-        modelPacket0515.setInput3A("00400000000000000000000000000000");
-        modelPacket0515.setInput4A("08000000000000000000000000000000");
-        modelPacket0515.setInput5A("04000000000000000000000000000000");
+        modelPacket0515.setInput1A(setNoteInfo.ACCEPTANCE);
+
+        //OLD
+        modelPacket0515.setInput2A(setNoteInfo.INR_100);
+        modelPacket0515.setInput3A(setNoteInfo.INR_200);
+        modelPacket0515.setInput4A(setNoteInfo.INR_500);
+        modelPacket0515.setInput5A(setNoteInfo.INR_500);
+
         modelPacket0515.setInput1B("00000000000000000000000000000000");
         modelPacket0515.setInput2B("00000000000000000000000000000000");
         modelPacket0515.setInput3B("00000000000000000000000000000000");
@@ -122,12 +112,7 @@ public class SetUnitInfo {
         modelPacket0515.setInput5B("00000000000000000000000000000000");
         modelPacket0515.setReserved("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 
-//        String data_0518 = "0000 " +
-//                "03 00 02 00 0000" +
-//                "01 00 01 00 0000" +
-//                "01 00 01 00 0000" +
-//                "01 00 01 00 0000" +
-//                "01 00 01 00 0000".replace(" ", "");
+        //O5D0 - to check
 
         modelPacket0518.setPacketId(packet.PKT_0518);
         modelPacket0518.setLength(length.LENGTH_0022);
@@ -163,7 +148,6 @@ public class SetUnitInfo {
         modelPacket0518.setRoomB_c5("00");
         modelPacket0518.setRoom_reserved_c5("0000");
 
-//        String data_0521 = "0000 000000 70 00 00 00 00 00 00 00 00 00 00000000000000000000 08 00 00000000000000";
         modelPacket0521.setPacketId(packet.PKT_0521);
         modelPacket0521.setLength(length.LENGTH_0024);
         modelPacket0521.setStatus("0000");
@@ -183,16 +167,11 @@ public class SetUnitInfo {
         modelPacket0521.setUrjb2("00");
         modelPacket0521.setReserved3("00000000000000");
 
-//        String data_0517 = "0000 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
         modelPacket0517.setPacketId(packet.PKT_0517);
         modelPacket0517.setLength(length.LENGTH_0014);
         modelPacket0517.setStatus("0000");
         modelPacket0517.setDenominationCode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
-//        String data_0529 = "01 01 01 02 02 01 01 01 02 02 00 " +
-//                "000000000000000000" +
-//                "01 01 01 01 01 01 01 01 01 01 00 " +
-//                "000000000000000000";
 //        modelPacket0529.setPacketId(packet.PKT_0529);
         modelPacket0529.setPacketId("0729");
         modelPacket0529.setLength(length.LENGTH_002A);
@@ -220,11 +199,6 @@ public class SetUnitInfo {
         modelPacket0529.setDispense_input10("01");
         modelPacket0529.setDispense_input11("00");
         modelPacket0529.setDispense_reserved("000000000000000000");
-
-//        String data_0586 = "000000000000" +
-//                "FFFF FFFF FFFF FFFF FFFF FFFF 0000 0000 0000 0000 " +
-//                "FFFF000000000000000000000000000000000000 " +
-//                "0000 0000 00000000000000000000";
 
         modelPacket0586.setPacketId(packet.PKT_0586);
         modelPacket0586.setLength(length.LENGTH_003E);

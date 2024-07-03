@@ -3,9 +3,6 @@ package com.hpy.crmdriver.ui.theme.util;
 public class AppConfig {
 
     public String SUCCESS_CODE = "00";
-    public int MILI_100 = 100;
-    public int MILI_200 = 200;
-    public int MILI_500 = 500;
     public int POSITION_0 = 0;
     public int POSITION_1 = 1;
     public int POSITION_2 = 2;
@@ -66,6 +63,15 @@ public class AppConfig {
     public String GET_LOGS_DATA = "GET_LOGS_DATA";
     public String GET_ERASE_ALL_LOGS_DATA = "GET_ERASE_ALL_LOGS_DATA";
 
+    public String APP_MODE_VALUE = "APP_MODE_VALUE";
+    public String APP_MODE_TEST = "APP_MODE_TEST";
+    public String APP_MODE_LIVE = "APP_MODE_LIVE";
+
+    public String RETRACT_VALUE = "RETRACE_VALUE";
+    public String RETRACT_CS = "RETRACT_CS";
+    public String RETRACT_ESC = "RETRACT_ESC";
+    public String RETRACT_ESC_CS = "RETRACT_ESC_CS";
+    public String RETRACT_ESC_DISPENSE_REJECT = "RETRACT_ESC_DISPENSE_REJECT";
 
 
 }

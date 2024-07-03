@@ -99,15 +99,15 @@ public class CommandCalculator {
         } else if (cmdType.equals(commandType.CANCEL)) {
             returnValue = new Cancel().generateCommand();
         } else if (cmdType.equals(commandType.CASH_COUNT)) {
-            returnValue = new CashCount().generateCommand();
+            returnValue = new CashCount().generateCommand(context);
         } else if (cmdType.equals(commandType.DISPENSE)) {
             returnValue = new Dispense().generateCommand(context);
         } else if (cmdType.equals(commandType.STORE_MONEY)) {
             returnValue = new StoreMoney().generateCommand(context);
         } else if (cmdType.equals(commandType.CASH_ROLLBACK)) {
-            returnValue = new CashRollback().generateCommand();
+            returnValue = new CashRollback().generateCommand(context);
         } else if (cmdType.equals(commandType.RETRACT)) {
-            returnValue = new Retract().generateCommand();
+            returnValue = new Retract().generateCommand(context);
         } else if (cmdType.equals(commandType.TRANSFER)) {
             returnValue = new Transfer().generateCommand();
         } else if (cmdType.equals(commandType.DRIVE_SHUTTER)) {

@@ -9,14 +9,14 @@ import android.widget.TextView;
 import com.hpy.crmdriver.ui.theme.util.AppLogs;
 import com.hpy.crmdriver.ui.theme.util.KeyValue;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
+import com.hpy.crmdriver.ui.theme.util.TimeOut;
 
 public class ControlBulkCmdGenerator {
 
     CmdSupportClass cmdSupportClass = new CmdSupportClass();
     CommandSequence commandSequence = new CommandSequence();
     CommandType commandType = new CommandType();
-    private final int TIMEOUT_10 = 10000;
-    private final int TIMEOUT_20 = 20000;
+    TimeOut timeOut = new TimeOut();
     String TAG = "CMD_INPUT_OUTPUT";
 
     public String deviceDescriptorData(UsbDeviceConnection usbConnection, TextView textView) {
@@ -24,7 +24,7 @@ public class ControlBulkCmdGenerator {
 
         byte[] buffer = new byte[64];
         int length = usbConnection.controlTransfer(0x80, 0x06, 0x0100,
-                0x0000, buffer, buffer.length, TIMEOUT_10);
+                0x0000, buffer, buffer.length, timeOut.TIMEOUT_10);
         if (length > 0) {
             String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(length, buffer);
             returnValue = "Device Descriptor Data : " + bytesToHex;
@@ -46,7 +46,7 @@ public class ControlBulkCmdGenerator {
                 while (true) {
 
                     byte[] bufferResponse = new byte[endpointThree.getMaxPacketSize()];
-                    int bytesReadResp = usbConnection.bulkTransfer(endpointThree, bufferResponse, bufferResponse.length, TIMEOUT_10);
+                    int bytesReadResp = usbConnection.bulkTransfer(endpointThree, bufferResponse, bufferResponse.length, timeOut.TIMEOUT_10);
 
                     if (bytesReadResp > 0) {
                         String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(bytesReadResp, bufferResponse);
@@ -68,12 +68,12 @@ public class ControlBulkCmdGenerator {
         thread.start();
     }
 
-    public String commandSendingRequest(Context context, UsbDeviceConnection usbConnection,int position, TextView textView, StringBuilder stringBuilder, int commandLength) {
+    public String commandSendingRequest(Context context, UsbDeviceConnection usbConnection, int position, TextView textView, StringBuilder stringBuilder, int commandLength) {
         String returnValue = "";
 
         int reqType = 0xC2;
 //        int req = 0x00;
-        int req = commandSequence.getNextSeqCmdSendingReq(context,position);
+        int req = commandSequence.getNextSeqCmdSendingReq(context, position);
 //        int value = 0x1200;
 //        int value = 0x0012;
         int value = commandLength;
@@ -85,7 +85,7 @@ public class ControlBulkCmdGenerator {
         appendText(inputMessage, textView, stringBuilder);
         AppLogs.generate(inputMessage);
 
-        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, TIMEOUT_10);
+        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
 
         if (length > 0) {
 
@@ -108,7 +108,7 @@ public class ControlBulkCmdGenerator {
     public boolean bulkOutRequest(UsbDeviceConnection usbConnection, byte[] commandArray, UsbEndpoint endpointOne, String command, String commandType, TextView textView, StringBuilder stringBuilder) {
         boolean returnValue = true;
         byte[] bufferRequestFirmware = commandArray;
-        int transferredBytesReqFirmware = usbConnection.bulkTransfer(endpointOne, bufferRequestFirmware, bufferRequestFirmware.length, TIMEOUT_10);
+        int transferredBytesReqFirmware = usbConnection.bulkTransfer(endpointOne, bufferRequestFirmware, bufferRequestFirmware.length, timeOut.TIMEOUT_10);
 //        CmdSupportClass.printCommandHexSequence(commandArray);
         String inputMessage = "";
         if (transferredBytesReqFirmware > 0) {
@@ -138,7 +138,7 @@ public class ControlBulkCmdGenerator {
         AppLogs.generate(inputMessage);
         appendText(inputMessage, textView, stringBuilder);
 
-        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, TIMEOUT_10);
+        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
 
         if (length > 0) {
             StringBuilder sb = new StringBuilder();
@@ -168,7 +168,7 @@ public class ControlBulkCmdGenerator {
         AppLogs.generate(inputMessage);
         appendText(inputMessage, textView, stringBuilder);
 
-        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, TIMEOUT_10);
+        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
         if (length > 0) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < length; i++) {
@@ -195,14 +195,14 @@ public class ControlBulkCmdGenerator {
 //            bufferResponse = new byte[usbEndpointTwo.getMaxPacketSize()];
 //        }
 
-        int bytesReadResp = usbConnection.bulkTransfer(usbEndpointTwo, bufferResponse, bufferResponse.length, TIMEOUT_20);
+        int bytesReadResp = usbConnection.bulkTransfer(usbEndpointTwo, bufferResponse, bufferResponse.length, timeOut.TIMEOUT_20);
 
         //byte[] bufferResponse1 = new byte[usbEndpointTwo.getMaxPacketSize()];
 
         AppLogs.generate("receivedBulInRequest_Length : " + bufferResponse.length);
         if (bytesReadResp > 0) {
             String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(bytesReadResp, bufferResponse);
-            String outputMessage = "Received BulkIn Data  ( " + cmdType + " ): " + "Successfully : " + bytesToHex.replaceAll(" ","");
+            String outputMessage = "Received BulkIn Data  ( " + cmdType + " ): " + "Successfully : " + bytesToHex.replaceAll(" ", "");
             AppLogs.generateTAG(TAG, outputMessage);
             returnValue = bytesToHex;
         } else {
@@ -228,7 +228,7 @@ public class ControlBulkCmdGenerator {
         AppLogs.generate(inputMessage);
 
         appendText(inputMessage, textView, stringBuilder);
-        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, TIMEOUT_10);
+        int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
         if (length > 0) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < length; i++) {

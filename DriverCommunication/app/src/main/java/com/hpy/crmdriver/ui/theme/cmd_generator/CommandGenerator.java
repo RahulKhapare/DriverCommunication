@@ -32,13 +32,14 @@ import com.hpy.crmdriver.ui.theme.cmd_msg_data.UserMemoryWrite;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
 import com.hpy.crmdriver.ui.theme.util.AppLogs;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
+import com.hpy.crmdriver.ui.theme.util.TimeOut;
 
 public class CommandGenerator {
 
     public CommandCalculator commandCalculator = new CommandCalculator();
     public ControlBulkCmdGenerator controlBulkCmdGenerator = new ControlBulkCmdGenerator();
     public CmdSupportClass cmdSupportClass = new CmdSupportClass();
-    public CommandType commandType = new CommandType();
+    public CommandType commandFormatType = new CommandType();
     public CmdErrorCode cmdErrorCode = new CmdErrorCode();
     public StringBuilder stringBuilder;
 
@@ -51,13 +52,15 @@ public class CommandGenerator {
 
     public boolean isResponseReceived = false;
     public boolean isBreakOuterLoop = false;
+    public String ERROR_CODE = "f6";
 
     public SessionData sessionData = new SessionData();
     public SessionModel sessionModel = new SessionModel();
 
+    public TimeOut timeOut = new TimeOut();
+
     public boolean generate(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
         clearData();
-        clearCommandCounter();
         stringBuilder = new StringBuilder();
         boolean isSuccess = false;
         String message = "";
@@ -208,6 +211,9 @@ public class CommandGenerator {
                                             returnValue = getResponse(receivedBulInRequest);
                                             isResponseReceived = true;
                                             break outerLoop;
+                                        } else if (responseCode.equalsIgnoreCase(ERROR_CODE)) {
+                                            returnValue = returnError(responseCode);
+                                            errorSleep(commandType);
                                         }
                                         //TODO - Response Receiving Confirmation (Error Handling)
                                         else if (isErrorFound017E(responseCode)) {
@@ -227,6 +233,9 @@ public class CommandGenerator {
                                         }
 
                                     }
+                                } else if (responseCode.equalsIgnoreCase(ERROR_CODE)) {
+                                    returnValue = returnError(responseCode);
+                                    errorSleep(commandType);
                                 } else if (isErrorFound017E(responseCode) || isErrorFound80FF(responseCode) || responseCode.equalsIgnoreCase(cmdErrorCode.CODE_7F)) {
 
                                     //TODO - Response Receiving Request (Error Handling)
@@ -239,13 +248,6 @@ public class CommandGenerator {
 //                                        returnValue = returnError(responseCode);
 //                                        break outerLoop;
 //                                    }
-
-                                    try {
-                                        Thread.sleep(20000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-
                                 }
 
                             } else {
@@ -255,7 +257,10 @@ public class CommandGenerator {
                         }
                     } else {
                         //TODO - Command Sending Confirmation (Error Handling)
-                        if (responseCode.equalsIgnoreCase(cmdErrorCode.CODE_7F)) {
+                        if (responseCode.equalsIgnoreCase(ERROR_CODE)) {
+                            returnValue = returnError(responseCode);
+                            errorSleep(commandType);
+                        } else if (responseCode.equalsIgnoreCase(cmdErrorCode.CODE_7F)) {
                             AppLogs.generate("CommandSendingConfirmation Failed : " + i);
                             if (i == length - 1) {
                                 returnValue = returnError(responseCode);
@@ -297,6 +302,9 @@ public class CommandGenerator {
             }
         } else if (responseCode.equalsIgnoreCase(cmdErrorCode.CODE_7F)) {
             returnValue = returnError(responseCode);
+        } else if (responseCode.equalsIgnoreCase(ERROR_CODE)) {
+            returnValue = returnError(responseCode);
+            errorSleep(commandType);
         } else if (isErrorFound017E(responseCode)) {
             //TODO - check repeat count conditions
             if (commandSendingRequestCount < 3) {
@@ -357,73 +365,73 @@ public class CommandGenerator {
     public String checkResponseStatus(Context context, String cmdType, String response) {
         String returnValue = "";
 
-        if (cmdType.equals(commandType.GET_FIRMWARE)) {
+        if (cmdType.equals(commandFormatType.GET_FIRMWARE)) {
             FirmwareCommand firmwareCommand = new FirmwareCommand();
             firmwareCommand.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.PROGRAM_DOWNLOAD)) {
+        } else if (cmdType.equals(commandFormatType.PROGRAM_DOWNLOAD)) {
             ProgramDownload programDownload = new ProgramDownload();
             programDownload.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.GET_UNIT_INFO)) {
+        } else if (cmdType.equals(commandFormatType.GET_UNIT_INFO)) {
             GetUnitInfo getUnitInfo = new GetUnitInfo();
             getUnitInfo.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.SET_UNIT_INFO)) {
+        } else if (cmdType.equals(commandFormatType.SET_UNIT_INFO)) {
             SetUnitInfo setUnitInfo = new SetUnitInfo();
             setUnitInfo.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.RESET)) {
+        } else if (cmdType.equals(commandFormatType.RESET)) {
             Reset reset = new Reset();
             reset.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.DRIVER_ACCESSORY)) {
+        } else if (cmdType.equals(commandFormatType.DRIVER_ACCESSORY)) {
             DriverAccessory driverAccessory = new DriverAccessory();
             driverAccessory.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.READ_STATUS)) {
+        } else if (cmdType.equals(commandFormatType.READ_STATUS)) {
             ReadStatus readStatus = new ReadStatus();
             readStatus.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.GET_LOGS_DATA)) {
+        } else if (cmdType.equals(commandFormatType.GET_LOGS_DATA)) {
             GetLogsData getLogsData = new GetLogsData();
             getLogsData.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.CANCEL)) {
+        } else if (cmdType.equals(commandFormatType.CANCEL)) {
             Cancel cancel = new Cancel();
             cancel.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.CASH_COUNT)) {
+        } else if (cmdType.equals(commandFormatType.CASH_COUNT)) {
             CashCount cashCount = new CashCount();
             cashCount.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.DISPENSE)) {
+        } else if (cmdType.equals(commandFormatType.DISPENSE)) {
             Dispense dispense = new Dispense();
             dispense.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.STORE_MONEY)) {
+        } else if (cmdType.equals(commandFormatType.STORE_MONEY)) {
             StoreMoney storeMoney = new StoreMoney();
             storeMoney.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.CASH_ROLLBACK)) {
+        } else if (cmdType.equals(commandFormatType.CASH_ROLLBACK)) {
             CashRollback cashRollback = new CashRollback();
             cashRollback.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.RETRACT)) {
+        } else if (cmdType.equals(commandFormatType.RETRACT)) {
             Retract retract = new Retract();
             retract.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.TRANSFER)) {
+        } else if (cmdType.equals(commandFormatType.TRANSFER)) {
             Transfer transfer = new Transfer();
             transfer.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.DRIVE_SHUTTER)) {
+        } else if (cmdType.equals(commandFormatType.DRIVE_SHUTTER)) {
             DriveShutter driveShutter = new DriveShutter();
             driveShutter.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.PREPARE_TRANS)) {
+        } else if (cmdType.equals(commandFormatType.PREPARE_TRANS)) {
             PrepareTransaction prepareTransaction = new PrepareTransaction();
             prepareTransaction.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.GET_BANK_NOTE_INFO)) {
+        } else if (cmdType.equals(commandFormatType.GET_BANK_NOTE_INFO)) {
             GetBankNoteInfo getBankNoteInfo = new GetBankNoteInfo();
             getBankNoteInfo.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.GET_CASSETTE_INFO)) {
+        } else if (cmdType.equals(commandFormatType.GET_CASSETTE_INFO)) {
             GetCassetteInfo getCassetteInfo = new GetCassetteInfo();
             getCassetteInfo.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.SET_DENOMINATION_CODE)) {
+        } else if (cmdType.equals(commandFormatType.SET_DENOMINATION_CODE)) {
             SetDenominationCode setDenominationCode = new SetDenominationCode();
             setDenominationCode.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.USER_MEMORY_WRITE)) {
+        } else if (cmdType.equals(commandFormatType.USER_MEMORY_WRITE)) {
             UserMemoryWrite userMemoryWrite = new UserMemoryWrite();
             userMemoryWrite.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.USER_MEMORY_READ)) {
+        } else if (cmdType.equals(commandFormatType.USER_MEMORY_READ)) {
             UserMemoryRead userMemoryRead = new UserMemoryRead();
             userMemoryRead.parseCommandResponse(context, response);
-        } else if (cmdType.equals(commandType.REBOOT)) {
+        } else if (cmdType.equals(commandFormatType.REBOOT)) {
             Reboot reboot = new Reboot();
             reboot.parseCommandResponse(context, response);
         }
@@ -441,53 +449,53 @@ public class CommandGenerator {
     public String checkInterruptStatus(Context context, String cmdType) {
         String returnValue = "";
 
-        if (cmdType.equals(commandType.GET_FIRMWARE)) {
+        if (cmdType.equals(commandFormatType.GET_FIRMWARE)) {
             //TODO - need to check how we can use different function for different command
 //            returnValue = InterruptStatusChecker.getStatusOfByteEight(context);
 
-        } else if (cmdType.equals(commandType.PROGRAM_DOWNLOAD)) {
+        } else if (cmdType.equals(commandFormatType.PROGRAM_DOWNLOAD)) {
 
-        } else if (cmdType.equals(commandType.GET_UNIT_INFO)) {
+        } else if (cmdType.equals(commandFormatType.GET_UNIT_INFO)) {
 
-        } else if (cmdType.equals(commandType.SET_UNIT_INFO)) {
+        } else if (cmdType.equals(commandFormatType.SET_UNIT_INFO)) {
 
-        } else if (cmdType.equals(commandType.RESET)) {
+        } else if (cmdType.equals(commandFormatType.RESET)) {
 
-        } else if (cmdType.equals(commandType.DRIVER_ACCESSORY)) {
+        } else if (cmdType.equals(commandFormatType.DRIVER_ACCESSORY)) {
 
-        } else if (cmdType.equals(commandType.READ_STATUS)) {
+        } else if (cmdType.equals(commandFormatType.READ_STATUS)) {
 
-        } else if (cmdType.equals(commandType.GET_LOGS_DATA)) {
+        } else if (cmdType.equals(commandFormatType.GET_LOGS_DATA)) {
 
-        } else if (cmdType.equals(commandType.CANCEL)) {
+        } else if (cmdType.equals(commandFormatType.CANCEL)) {
 
-        } else if (cmdType.equals(commandType.CASH_COUNT)) {
+        } else if (cmdType.equals(commandFormatType.CASH_COUNT)) {
 
-        } else if (cmdType.equals(commandType.DISPENSE)) {
+        } else if (cmdType.equals(commandFormatType.DISPENSE)) {
 
-        } else if (cmdType.equals(commandType.STORE_MONEY)) {
+        } else if (cmdType.equals(commandFormatType.STORE_MONEY)) {
 
-        } else if (cmdType.equals(commandType.CASH_ROLLBACK)) {
+        } else if (cmdType.equals(commandFormatType.CASH_ROLLBACK)) {
 
-        } else if (cmdType.equals(commandType.RETRACT)) {
+        } else if (cmdType.equals(commandFormatType.RETRACT)) {
 
-        } else if (cmdType.equals(commandType.TRANSFER)) {
+        } else if (cmdType.equals(commandFormatType.TRANSFER)) {
 
-        } else if (cmdType.equals(commandType.DRIVE_SHUTTER)) {
+        } else if (cmdType.equals(commandFormatType.DRIVE_SHUTTER)) {
 
-        } else if (cmdType.equals(commandType.PREPARE_TRANS)) {
+        } else if (cmdType.equals(commandFormatType.PREPARE_TRANS)) {
 
-        } else if (cmdType.equals(commandType.GET_BANK_NOTE_INFO)) {
+        } else if (cmdType.equals(commandFormatType.GET_BANK_NOTE_INFO)) {
 
-        } else if (cmdType.equals(commandType.GET_CASSETTE_INFO)) {
+        } else if (cmdType.equals(commandFormatType.GET_CASSETTE_INFO)) {
 
-        } else if (cmdType.equals(commandType.SET_DENOMINATION_CODE)) {
+        } else if (cmdType.equals(commandFormatType.SET_DENOMINATION_CODE)) {
 
-        } else if (cmdType.equals(commandType.USER_MEMORY_WRITE)) {
+        } else if (cmdType.equals(commandFormatType.USER_MEMORY_WRITE)) {
 
-        } else if (cmdType.equals(commandType.USER_MEMORY_READ)) {
+        } else if (cmdType.equals(commandFormatType.USER_MEMORY_READ)) {
 
-        } else if (cmdType.equals(commandType.REBOOT)) {
+        } else if (cmdType.equals(commandFormatType.REBOOT)) {
 
         }
 //        else if (cmdType.equals(commandType.TEST_COMMAND)) {
@@ -513,12 +521,26 @@ public class CommandGenerator {
         textView.setText(stringBuilder.toString());
     }
 
+
+    public void errorSleep(String commandType) {
+        if (commandType.equals(commandFormatType.RESET)) {
+            threadSleep(timeOut.TIMEOUT_20);
+        } else {
+            threadSleep(timeOut.TIMEOUT_5);
+        }
+    }
+
+    public void threadSleep(int timing) {
+        try {
+            Thread.sleep(timing);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void clearAllSession(Context context) {
         sessionData.clearAllSession(context);
         sessionModel.clearAllSession(context);
     }
 
-    public void clearCommandCounter() {
-        commandSendingRequestCount = 0;
-    }
 }
