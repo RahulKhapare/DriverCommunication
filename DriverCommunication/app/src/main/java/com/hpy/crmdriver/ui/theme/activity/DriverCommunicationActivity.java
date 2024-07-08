@@ -1,11 +1,13 @@
 package com.hpy.crmdriver.ui.theme.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.hardware.usb.UsbConfiguration;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
@@ -17,17 +19,15 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-import com.hpy.crmdriver.MainActivity;
 import com.hpy.crmdriver.R;
 import com.hpy.crmdriver.ui.theme.cmd_processor.CommandExecutor;
 import com.hpy.crmdriver.ui.theme.data.Packet;
@@ -35,10 +35,15 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0081;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket008E;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
 import com.hpy.crmdriver.ui.theme.util.AppConfig;
+import com.hpy.crmdriver.ui.theme.util.AppLogs;
 import com.hpy.crmdriver.ui.theme.util.Click;
 import com.hpy.crmdriver.ui.theme.util.DeviceDetails;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class DriverCommunicationActivity extends AppCompatActivity {
@@ -89,7 +94,9 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private Button btnOpenShutterDispense;
     private Button btnCloseShutterDispense;
     private Button btnPrepareNextTransactionDispense;
-    private Button btnProgramDownload;
+    private Button btnProgramDownloadStart;
+    private Button btnProgramDownloadSendData;
+    private Button btnProgramDownloadEnd;
     private Button btnLogsData;
     private Button btnCancel;
     private Button btnGetBankNotesInfo;
@@ -97,6 +104,8 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private ToggleButton btnToggle;
 
     private AppConfig appConfig = new AppConfig();
+
+    private static final int REQUEST_PERMISSION_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,8 +157,12 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         btnCloseShutterDispense = findViewById(R.id.btnCloseShutterDispense);
         btnPrepareNextTransactionDispense = findViewById(R.id.btnPrepareNextTransactionDispense);
 
+        //Program Download
+        btnProgramDownloadStart = findViewById(R.id.btnProgramDownloadStart);
+        btnProgramDownloadSendData = findViewById(R.id.btnProgramDownloadSendData);
+        btnProgramDownloadEnd = findViewById(R.id.btnProgramDownloadEnd);
+
         //Others
-        btnProgramDownload = findViewById(R.id.btnProgramDownload);
         btnLogsData = findViewById(R.id.btnLogsData);
         btnCancel = findViewById(R.id.btnCancel);
         btnGetBankNotesInfo = findViewById(R.id.btnGetBankNotesInfo);
@@ -193,7 +206,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnResetQuick);
                 quickReset(btnResetQuick);
             }
         });
@@ -202,7 +214,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnReboot);
                 reboot(btnReboot);
             }
         });
@@ -211,7 +222,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnOpenShutterNormal);
                 openShutter(btnOpenShutterNormal);
             }
         });
@@ -219,7 +229,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnCloseShutterNormal);
                 closeShutter(btnCloseShutterNormal);
             }
         });
@@ -228,7 +237,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnClearAll);
                 clearAllView();
             }
         });
@@ -237,7 +245,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnGetStatus);
                 getStatus(btnGetStatus);
             }
         });
@@ -246,7 +253,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnGetUnitInfo);
                 getUnitInfo(btnGetUnitInfo);
             }
         });
@@ -255,7 +261,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnClearSession);
                 //TODO - Clear Data
                 sessionData.clearAllSession(activity);
                 sessionModel.clearAllSession(activity);
@@ -267,7 +272,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnFirmware);
                 firmware(btnFirmware);
             }
         });
@@ -276,7 +280,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnSetDenominationCode);
                 setDenominationCode(btnSetDenominationCode);
             }
         });
@@ -284,7 +287,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnSetUnitInfo);
                 setUnitInfo(btnSetUnitInfo);
             }
         });
@@ -293,7 +295,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnResetNormal);
                 resetNormal(btnResetNormal);
             }
         });
@@ -302,7 +303,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnPrepareTransactionDeposit);
                 prepareTransaction(btnPrepareTransactionDeposit);
             }
         });
@@ -311,7 +311,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnOpenShutterDeposit);
                 openShutter(btnOpenShutterDeposit);
             }
         });
@@ -320,7 +319,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnCashCount);
                 cashCount(btnCashCount);
             }
         });
@@ -329,7 +327,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnCashRollBack);
                 rollBack(btnCashRollBack);
             }
         });
@@ -338,7 +335,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnStoreMoney);
                 storeMoney(btnStoreMoney);
             }
         });
@@ -347,7 +343,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnPrepareNextTransactionDeposit);
                 nextTransaction(btnPrepareNextTransactionDeposit);
             }
         });
@@ -356,7 +351,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnPrepareTransactionDispense);
                 prepareTransaction(btnPrepareTransactionDispense);
             }
         });
@@ -365,7 +359,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnDispense);
                 dispense(btnDispense);
             }
         });
@@ -374,7 +367,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnRetract);
                 retract(btnRetract);
             }
         });
@@ -383,7 +375,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnOpenShutterDispense);
                 openShutter(btnOpenShutterDispense);
             }
         });
@@ -392,7 +383,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnCloseShutterDispense);
                 closeShutter(btnCloseShutterDispense);
             }
         });
@@ -401,17 +391,31 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnPrepareNextTransactionDispense);
                 nextTransaction(btnPrepareNextTransactionDispense);
             }
         });
 
-        btnProgramDownload.setOnClickListener(new View.OnClickListener() {
+        btnProgramDownloadStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnProgramDownload);
-                programDownload(btnProgramDownload);
+                programDownloadStart(btnProgramDownloadStart);
+            }
+        });
+
+        btnProgramDownloadSendData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                programDownloadSendData(btnProgramDownloadSendData);
+            }
+        });
+
+        btnProgramDownloadEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Click.preventTwoClick(v);
+                programDownloadEnd(btnProgramDownloadEnd);
             }
         });
 
@@ -419,7 +423,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnLogsData);
                 getLogsData(btnLogsData);
             }
         });
@@ -428,7 +431,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnCancel);
                 cancel(btnCancel);
             }
         });
@@ -437,7 +439,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnGetBankNotesInfo);
                 getBankNoteInfo(btnGetBankNotesInfo);
             }
         });
@@ -446,11 +447,56 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                setAnimation(btnGetCassetteInfo);
                 getCassetteNoteInfo(btnGetCassetteInfo);
             }
         });
 
+//        checkProgramDownloadFileData("C:/Rahul/HPY-20240702/ZXR60INT000003");
+
+    }
+
+    private void checkProgramDownloadFileData(String folderPath) {
+        // Replace with the actual path of your file
+
+        String file_ZXR60 = folderPath + "/ZXR60";
+        String file_ZXR60INT = folderPath + "/ZXR60INT.pdl";
+
+        File file = new File(file_ZXR60);
+        long fileSizeInBytes = file.length(); // Get the file size in bytes
+        long fileSizeInKB = fileSizeInBytes / 1024; // Convert to KB
+        long fileSizeInMB = fileSizeInKB / 1024; // Convert to MB
+
+        //TODO - File Size
+        String fileSize = "File Size: " + fileSizeInBytes + " bytes (" + fileSizeInKB + " KB / " + fileSizeInMB + " MB)";
+        AppLogs.generateTAG("ProgramDownload", fileSize);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file_ZXR60INT));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            reader.close();
+
+            //TODO - File Content
+            String fileContent = stringBuilder.toString();
+            AppLogs.generateTAG("ProgramDownload", fileContent);
+
+        } catch (IOException e) {
+            AppLogs.generateTAG("ProgramDownload", "Exp : " + e.getMessage());
+        }
+    }
+
+    private void checkPermission() {
+        // Check if we have permission to read external storage
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted, request it
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_CODE);
+        }
     }
 
     private void setExceptionData() {
@@ -471,7 +517,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 //                    "MODEL 008E : " + model008E.getPacketId() + model008E.getLength() + model008E.getErrorCode() +
 //                    model008E.getReserved() + model008E.getErrorCassette() + model008E.getUnitStatus()
 //                    + model008E.getRecoveryCode() + model008E.getPositionCode());
-            txtExceptionData.setText(txtExceptionData.getText().toString() + "\n\n" +
+            txtExceptionData.setText(txtExceptionData.getText().toString() + "  |  " +
                     "MODEL 008E CODE : " + model008E.getErrorCode());
         }
     }
@@ -614,12 +660,30 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         }
     }
 
-    private void programDownload(Button button) {
+    private void programDownloadStart(Button button) {
         if (isProcessCompleted) {
             txtCommunicationProcess.setText("");
-            Toast.makeText(activity, "Under process, don't use.", Toast.LENGTH_SHORT).show();
+            boolean isSuccess = commandExecutor.isProgramDownloadStart(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
         }
     }
+
+    private void programDownloadSendData(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isProgramDownloadSendData(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
+    private void programDownloadEnd(Button button) {
+        if (isProcessCompleted) {
+            txtCommunicationProcess.setText("");
+            boolean isSuccess = commandExecutor.isProgramDownloadEnd(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+            getColorCode(isSuccess, button);
+        }
+    }
+
 
     private void cancel(Button button) {
         if (isProcessCompleted) {
@@ -668,11 +732,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             button.setBackground(getResources().getDrawable(R.drawable.button_red_bg));
         }
         setExceptionData();
-    }
-
-    private void setAnimation(Button button) {
-//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
-//        button.startAnimation(animation);
     }
 
     private void setColorNormal(Button button) {

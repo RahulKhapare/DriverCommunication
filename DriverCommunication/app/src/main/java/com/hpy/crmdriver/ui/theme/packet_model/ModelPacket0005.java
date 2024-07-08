@@ -11,6 +11,8 @@ public class ModelPacket0005 {
     String reserved;
     String writingAddress;
 
+    String programData;
+
     public String getPacketId() {
         return packetId;
     }
@@ -59,8 +61,16 @@ public class ModelPacket0005 {
         this.writingAddress = writingAddress;
     }
 
+    public String getProgramData() {
+        return programData;
+    }
+
+    public void setProgramData(String programData) {
+        this.programData = programData;
+    }
+
     public String generatePacket() {
-        return packetId + length + controlId + pdlBlockType + reserved + writingAddress;
+        return packetId + length + controlId + pdlBlockType + reserved + writingAddress + programData;
     }
 
     public String parsePacket(String responseData) {

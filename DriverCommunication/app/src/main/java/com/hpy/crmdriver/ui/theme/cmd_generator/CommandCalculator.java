@@ -83,7 +83,7 @@ public class CommandCalculator {
         if (cmdType.equals(commandType.GET_FIRMWARE)) {
             returnValue = new FirmwareCommand().generateCommand();
         } else if (cmdType.equals(commandType.PROGRAM_DOWNLOAD)) {
-            returnValue = new ProgramDownload().generateCommand();
+            returnValue = new ProgramDownload().generateCommand(context);
         } else if (cmdType.equals(commandType.GET_UNIT_INFO)) {
             returnValue = new GetUnitInfo().generateCommand(context);
         } else if (cmdType.equals(commandType.SET_UNIT_INFO)) {

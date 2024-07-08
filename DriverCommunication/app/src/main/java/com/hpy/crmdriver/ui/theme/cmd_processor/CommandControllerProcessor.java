@@ -74,11 +74,12 @@ public class CommandControllerProcessor {
         return isSuccess;
     }
 
-    public boolean programDownload(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+    public boolean programDownload(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
         boolean isSuccess = false;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {
 //        }
+        SessionData.addValue(context, appConfig.PROGRAM_DOWNLOAD_VALUE, cmdType);
         isSuccess = commandGenerator.generate(context, usbConnection, endpointOne, endpointTwo, commandType.PROGRAM_DOWNLOAD, txtCommunicationProcess);
         return isSuccess;
     }
@@ -188,7 +189,7 @@ public class CommandControllerProcessor {
         return isSuccess;
     }
 
-    public boolean retract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree,String cmdType, TextView txtCommunicationProcess) {
+    public boolean retract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, String cmdType, TextView txtCommunicationProcess) {
         //TODO - check for entire process
         boolean returnValue;
 //        if (isCheckingInterrupt(context, usbConnection, endpointThree, txtCommunicationProcess)) {

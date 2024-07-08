@@ -23,9 +23,8 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0529;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0581;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0586;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
-import com.hpy.crmdriver.ui.theme.util.AppLogs;
 import com.hpy.crmdriver.ui.theme.util.DateCalculator;
-import com.hpy.crmdriver.ui.theme.util.SetNoteInfo;
+import com.hpy.crmdriver.ui.theme.util.DenominationInfo;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
 
 public class SetUnitInfo {
@@ -57,11 +56,11 @@ public class SetUnitInfo {
     public String generateCommand() {
         String returnValue = "";
 
-        SetNoteInfo setNoteInfo = new SetNoteInfo();
+        DenominationInfo denominationInfo = new DenominationInfo();
 
         modelPacket0001.setPacketId(packet.PKT_0001);
         modelPacket0001.setLength(length.LENGTH_0004);
-        modelPacket0001.setCommand(commandData.CMD_0600);//check for value
+        modelPacket0001.setCommand(commandData.CMD_0600);
 
         String year = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getYear());
         String month = dateCalculator.formatTwoDigitsWithHex(dateCalculator.getMonth());
@@ -97,13 +96,11 @@ public class SetUnitInfo {
         modelPacket0515.setPacketId(packet.PKT_0515);
         modelPacket0515.setLength(length.LENGTH_0144);
         modelPacket0515.setStatus("0000");
-        modelPacket0515.setInput1A(setNoteInfo.ACCEPTANCE);
-
-        //OLD
-        modelPacket0515.setInput2A(setNoteInfo.INR_100);
-        modelPacket0515.setInput3A(setNoteInfo.INR_200);
-        modelPacket0515.setInput4A(setNoteInfo.INR_500);
-        modelPacket0515.setInput5A(setNoteInfo.INR_500);
+        modelPacket0515.setInput1A(denominationInfo.ACCEPTANCE);
+        modelPacket0515.setInput2A(denominationInfo.INR_10);
+        modelPacket0515.setInput3A(denominationInfo.INR_20);
+        modelPacket0515.setInput4A(denominationInfo.INR_50);
+        modelPacket0515.setInput5A(denominationInfo.INR_100);
 
         modelPacket0515.setInput1B("00000000000000000000000000000000");
         modelPacket0515.setInput2B("00000000000000000000000000000000");
@@ -170,7 +167,7 @@ public class SetUnitInfo {
         modelPacket0517.setPacketId(packet.PKT_0517);
         modelPacket0517.setLength(length.LENGTH_0014);
         modelPacket0517.setStatus("0000");
-        modelPacket0517.setDenominationCode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+        modelPacket0517.setDenominationCode("FFFFFF00000000000000000000000000");
 
 //        modelPacket0529.setPacketId(packet.PKT_0529);
         modelPacket0529.setPacketId("0729");

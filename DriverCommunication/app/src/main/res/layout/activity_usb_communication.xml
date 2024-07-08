@@ -17,14 +17,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical">\
 
-            <ToggleButton
-                android:id="@+id/btnToggle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textOff="TEST"
-                android:textOn="LIVE" />
+                android:orientation="horizontal">
+
+
+                <ToggleButton
+                    android:id="@+id/btnToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOff="TEST"
+                    android:textOn="LIVE" />
+
+                <TextView
+                    android:id="@+id/txtExceptionData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textStyle="bold">
+
+                </TextView>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -376,6 +394,56 @@
 
             </LinearLayout>
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Program Download"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnProgramDownloadStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_press_effect"
+                    android:padding="16dp"
+                    android:text="PROGRAM DOWNLOAD START"></Button>
+
+                <Button
+                    android:id="@+id/btnProgramDownloadSendData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_press_effect"
+                    android:padding="16dp"
+                    android:text="PROGRAM DOWNLOAD SEND DATA"></Button>
+
+
+                <Button
+                    android:id="@+id/btnProgramDownloadEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_press_effect"
+                    android:padding="16dp"
+                    android:text="PROGRAM DOWNLOAD END"></Button>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -392,45 +460,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnProgramDownload"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_press_effect"
-                    android:padding="16dp"
-                    android:text="PROGRAM DOWNLOAD"></Button>
-
-                <Button
-                    android:id="@+id/btnCancel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_press_effect"
-                    android:padding="16dp"
-                    android:text="CANCEL"></Button>
-
-
-                <Button
-                    android:id="@+id/btnLogsData"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_press_effect"
-                    android:padding="16dp"
-                    android:text="GET LOGS DATA"></Button>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
 
                 <Button
                     android:id="@+id/btnGetBankNotesInfo"
@@ -452,30 +481,57 @@
                     android:padding="16dp"
                     android:text="GET CASSETTE INFO"></Button>
 
+
+                <Button
+                    android:id="@+id/btnLogsData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_press_effect"
+                    android:padding="16dp"
+                    android:text="GET LOGS DATA"></Button>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_press_effect"
+                    android:padding="16dp"
+                    android:text="CANCEL"></Button>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_press_effect"
+                    android:padding="16dp"
+                    android:text=""
+                    android:visibility="invisible"></Button>
+
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/button_press_effect"
                     android:padding="16dp"
-                    android:text="GET CASSETTE INFO"
+                    android:text=""
                     android:visibility="invisible"></Button>
 
             </LinearLayout>
 
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtExceptionData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text=""
-            android:textColor="@color/black"
-            android:textStyle="bold">
-
-        </TextView>
 
 
         <TextView

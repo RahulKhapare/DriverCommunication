@@ -224,7 +224,7 @@ public class CommandExecutor {
     }
 
     public boolean isDispense(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isSuccess = commandControllerProcessor.dispense(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.DISPENSE_PER_ROOM, txtCommunicationProcess);
+        boolean isSuccess = commandControllerProcessor.dispense(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.DISPENSE_PER_DENOMINATION, txtCommunicationProcess);
         if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.DISPENSE).equals(appConfig.SUCCESS_CODE)) {
@@ -237,7 +237,7 @@ public class CommandExecutor {
     }
 
     public boolean isRetract(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isSuccess = commandControllerProcessor.retract(context, usbConnection, endpointOne, endpointTwo, endpointThree,appConfig.RETRACT_ESC_DISPENSE_REJECT, txtCommunicationProcess);
+        boolean isSuccess = commandControllerProcessor.retract(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.RETRACT_ESC_DISPENSE_REJECT, txtCommunicationProcess);
         if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.RETRACT).equals(appConfig.SUCCESS_CODE)) {
@@ -328,6 +328,46 @@ public class CommandExecutor {
         return isSuccess;
     }
 
+    public boolean isProgramDownloadStart(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.programDownload(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.PROGRAM_DOWNLOAD_START, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.PROGRAM_DOWNLOAD).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
+    }
+
+    public boolean isProgramDownloadSendData(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.programDownload(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.PROGRAM_DOWNLOAD_SEND_DATA, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.PROGRAM_DOWNLOAD).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
+    }
+
+
+    public boolean isProgramDownloadEnd(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
+        boolean isSuccess = commandControllerProcessor.programDownload(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.PROGRAM_DOWNLOAD_END, txtCommunicationProcess);
+        if (isSuccess) {
+            //TODO - Check Success Code
+            if (getSuccessCode0081(context, commandType.PROGRAM_DOWNLOAD).equals(appConfig.SUCCESS_CODE)) {
+                isSuccess = true;
+            } else {
+                isSuccess = false;
+            }
+        }
+        return isSuccess;
+    }
+
     public boolean isLogsData(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
         boolean isSuccess = commandControllerProcessor.getLogData(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.GET_LOGS_DATA, txtCommunicationProcess);
         if (isSuccess) {
@@ -385,7 +425,10 @@ public class CommandExecutor {
         model0081 = sessionModel.getModelFromSession(context, packet.PKT_0081, model0081.getClass());
         String successCode = stringHelper.getLastDigit(model0081.getResponseCode(), 2);
         Log.e("TAG", cmdType + " getSuccessCode0081_responseCode: " + model0081.getResponseCode());
-        Log.e("TAG", cmdType + " getSuccessCode0081_successCode: " + successCode);
+
+        ModelPacket008E model008E = new ModelPacket008E();
+        model008E = sessionModel.getModelFromSession(context, packet.PKT_008E, model008E.getClass());
+        Log.e("TAG", cmdType + " getSuccessCode008E_responseCode: " + model008E.getErrorCode());
         return successCode;
     }
 
