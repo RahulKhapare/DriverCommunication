@@ -224,7 +224,7 @@ public class CommandExecutor {
     }
 
     public boolean isDispense(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, UsbEndpoint endpointThree, TextView txtCommunicationProcess) {
-        boolean isSuccess = commandControllerProcessor.dispense(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.DISPENSE_PER_DENOMINATION, txtCommunicationProcess);
+        boolean isSuccess = commandControllerProcessor.dispense(context, usbConnection, endpointOne, endpointTwo, endpointThree, appConfig.DISPENSE_PER_ROOM, txtCommunicationProcess);
         if (isSuccess) {
             //TODO - Check Success Code
             if (getSuccessCode0081(context, commandType.DISPENSE).equals(appConfig.SUCCESS_CODE)) {
@@ -435,6 +435,10 @@ public class CommandExecutor {
     public void getSuccessCode008E(Context context) {
         ModelPacket008E model008E = new ModelPacket008E();
         model008E = sessionModel.getModelFromSession(context, packet.PKT_008E, model008E.getClass());
+        String errorCode = model008E.getErrorCode();
+
     }
+
+//    13,14,15,16,17,1A
 
 }

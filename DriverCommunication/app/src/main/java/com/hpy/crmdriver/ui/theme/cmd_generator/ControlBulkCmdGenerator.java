@@ -19,6 +19,8 @@ public class ControlBulkCmdGenerator {
     TimeOut timeOut = new TimeOut();
     String TAG = "CMD_INPUT_OUTPUT";
 
+    AppLogs appLogs = new AppLogs();
+
     public String deviceDescriptorData(UsbDeviceConnection usbConnection, TextView textView) {
         String returnValue = "";
 
@@ -28,13 +30,12 @@ public class ControlBulkCmdGenerator {
         if (length > 0) {
             String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(length, buffer);
             returnValue = "Device Descriptor Data : " + bytesToHex;
-            AppLogs.generate(returnValue);
+            appLogs.writeGenerateLogs(returnValue);
         } else {
             returnValue = "Failed to get device descriptor";
-            AppLogs.generate(returnValue);
+            appLogs.writeGenerateLogs(returnValue);
         }
         textView.setText(textView.getText().toString() + "\n\n" + returnValue);
-        AppLogs.generate(returnValue);
         return returnValue;
     }
 
@@ -51,9 +52,9 @@ public class ControlBulkCmdGenerator {
                     if (bytesReadResp > 0) {
                         String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(bytesReadResp, bufferResponse);
                         SessionData.addValue(context, KeyValue.INTERRUPT_DATA, bytesToHex);
-                        AppLogs.generate("Interrupt Data : " + bytesToHex);
+                        appLogs.writeGenerateLogs("Interrupt Data : " + bytesToHex);
                     } else {
-                        AppLogs.generate("Interrupt Data : " + "0");
+                        appLogs.writeGenerateLogs("Interrupt Data : " + "0");
                     }
 
                     try {
@@ -83,7 +84,7 @@ public class ControlBulkCmdGenerator {
         String inputMessage = "Command Sending Request (Input): " + "reqType:" + cmdSupportClass.getHexFromInt(reqType) + " req:" + cmdSupportClass.getHexFromInt(req) + " value:" + cmdSupportClass.getHexFromInt4(value) + " index:" + cmdSupportClass.getHexFromInt(index) + " bLength:" + buffer.length;
 
         appendText(inputMessage, textView, stringBuilder);
-        AppLogs.generate(inputMessage);
+        appLogs.writeGenerateLogs(inputMessage);
 
         int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
 
@@ -94,13 +95,12 @@ public class ControlBulkCmdGenerator {
                 sb.append(String.format("%02x ", buffer[i]));
             }
             returnValue = sb.toString();
-            AppLogs.generate("Command Sending Request (Response): " + sb.toString());
+            appLogs.writeGenerateLogs("Command Sending Request (Response): " + sb.toString());
 
         } else {
-            AppLogs.generate("Command Sending Request (Failed)");
+            appLogs.writeGenerateLogs("Command Sending Request (Failed)");
         }
 
-        AppLogs.generate(returnValue);
         return returnValue;
     }
 
@@ -113,10 +113,10 @@ public class ControlBulkCmdGenerator {
         String inputMessage = "";
         if (transferredBytesReqFirmware > 0) {
             inputMessage = "Sending BulkOut Command ( " + commandType + " ): " + "Successfully : " + command;
-            AppLogs.generateTAG(TAG, inputMessage);
+            appLogs.writeGenerateLogs(TAG, inputMessage);
         } else {
             inputMessage = "Sending BulkOut Command ( " + commandType + " ): " + "Failed";
-            AppLogs.generateTAG(TAG, inputMessage);
+            appLogs.writeGenerateLogs(TAG, inputMessage);
         }
         appendText(inputMessage, textView, stringBuilder);
         return returnValue;
@@ -135,7 +135,7 @@ public class ControlBulkCmdGenerator {
         byte[] buffer = new byte[8];
 
         String inputMessage = indexPosition + " " + "Command Sending Confirmation (Input):  " + "reqType:" + cmdSupportClass.getHexFromInt(reqType) + " req:" + cmdSupportClass.getHexFromInt(req) + " value:" + cmdSupportClass.getHexFromInt4(value) + " index:" + cmdSupportClass.getHexFromInt(index) + " bLength:" + buffer.length;
-        AppLogs.generate(inputMessage);
+        appLogs.writeGenerateLogs(inputMessage);
         appendText(inputMessage, textView, stringBuilder);
 
         int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
@@ -145,10 +145,10 @@ public class ControlBulkCmdGenerator {
             for (int i = 0; i < length; i++) {
                 sb.append(String.format("%02x ", buffer[i]));
             }
-            AppLogs.generate("Command Sending Confirmation (Response): " + sb.toString());
+            appLogs.writeGenerateLogs("Command Sending Confirmation (Response): " + sb.toString());
             returnValue = sb.toString();
         } else {
-            AppLogs.generate("Command Sending Confirmation (Failed)");
+            appLogs.writeGenerateLogs("Command Sending Confirmation (Failed)");
         }
         return returnValue;
     }
@@ -165,7 +165,7 @@ public class ControlBulkCmdGenerator {
 
 
         String inputMessage = "Response Receiving Request (Input): " + "reqType:" + cmdSupportClass.getHexFromInt(reqType) + " req:" + cmdSupportClass.getHexFromInt(req) + " value:" + cmdSupportClass.getHexFromInt4(value) + " index:" + cmdSupportClass.getHexFromInt(index) + " bLength:" + buffer.length;
-        AppLogs.generate(inputMessage);
+        appLogs.writeGenerateLogs(inputMessage);
         appendText(inputMessage, textView, stringBuilder);
 
         int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
@@ -174,10 +174,10 @@ public class ControlBulkCmdGenerator {
             for (int i = 0; i < length; i++) {
                 sb.append(String.format("%02x ", buffer[i]));
             }
-            AppLogs.generate("Response Receiving Request (Response): " + sb.toString());
+            appLogs.writeGenerateLogs("Response Receiving Request (Response): " + sb.toString());
             returnValue = sb.toString();
         } else {
-            AppLogs.generate("Response Receiving Request (Failed)");
+            appLogs.writeGenerateLogs("Response Receiving Request (Failed)");
         }
         return returnValue;
     }
@@ -199,15 +199,15 @@ public class ControlBulkCmdGenerator {
 
         //byte[] bufferResponse1 = new byte[usbEndpointTwo.getMaxPacketSize()];
 
-        AppLogs.generate("receivedBulInRequest_Length : " + bufferResponse.length);
+        appLogs.writeGenerateLogs("receivedBulInRequest_Length : " + bufferResponse.length);
         if (bytesReadResp > 0) {
             String bytesToHex = cmdSupportClass.byteArrayToHexDecimal(bytesReadResp, bufferResponse);
             String outputMessage = "Received BulkIn Data  ( " + cmdType + " ): " + "Successfully : " + bytesToHex.replaceAll(" ", "");
-            AppLogs.generateTAG(TAG, outputMessage);
+            appLogs.writeGenerateLogs(TAG, outputMessage);
             returnValue = bytesToHex;
         } else {
             String outputMessage = "Received BulkIn Data  ( " + cmdType + " ): " + "Failed";
-            AppLogs.generateTAG(TAG, outputMessage);
+            appLogs.writeGenerateLogs(TAG, outputMessage);
         }
 
         return returnValue;
@@ -225,7 +225,7 @@ public class ControlBulkCmdGenerator {
         byte[] buffer = new byte[8];
 
         String inputMessage = "Response Receiving Confirmation (Input): " + "reqType:" + cmdSupportClass.getHexFromInt(reqType) + " req:" + cmdSupportClass.getHexFromInt(req) + " value:" + cmdSupportClass.getHexFromInt4(value) + " index:" + cmdSupportClass.getHexFromInt(index) + " bLength:" + buffer.length;
-        AppLogs.generate(inputMessage);
+        appLogs.writeGenerateLogs(inputMessage);
 
         appendText(inputMessage, textView, stringBuilder);
         int length = usbConnection.controlTransfer(reqType, req, value, index, buffer, buffer.length, timeOut.TIMEOUT_10);
@@ -234,10 +234,10 @@ public class ControlBulkCmdGenerator {
             for (int i = 0; i < length; i++) {
                 sb.append(String.format("%02x ", buffer[i]));
             }
-            AppLogs.generate("Response Receiving Confirmation (Response): " + sb.toString());
+            appLogs.writeGenerateLogs("Response Receiving Confirmation (Response): " + sb.toString());
             returnValue = sb.toString();
         } else {
-            AppLogs.generate("Response Receiving Confirmation (Failed)");
+            appLogs.writeGenerateLogs("Response Receiving Confirmation (Failed)");
         }
         return returnValue;
     }

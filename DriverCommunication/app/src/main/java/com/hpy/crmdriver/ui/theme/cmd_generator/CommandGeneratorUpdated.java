@@ -70,7 +70,7 @@ public class CommandGeneratorUpdated {
     public boolean isCodeRunning = false;
 
     public boolean generate(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
-        clearData();
+        clearData();;
         stringBuilder = new StringBuilder();
         String message = "";
         message = textView.getText().toString();

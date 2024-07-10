@@ -97,10 +97,10 @@ public class SetUnitInfo {
         modelPacket0515.setLength(length.LENGTH_0144);
         modelPacket0515.setStatus("0000");
         modelPacket0515.setInput1A(denominationInfo.ACCEPTANCE);
-        modelPacket0515.setInput2A(denominationInfo.INR_10);
-        modelPacket0515.setInput3A(denominationInfo.INR_20);
-        modelPacket0515.setInput4A(denominationInfo.INR_50);
-        modelPacket0515.setInput5A(denominationInfo.INR_100);
+        modelPacket0515.setInput2A(denominationInfo.INR_100);
+        modelPacket0515.setInput3A(denominationInfo.INR_200);
+        modelPacket0515.setInput4A(denominationInfo.INR_500);
+        modelPacket0515.setInput5A(denominationInfo.INR_500);
 
         modelPacket0515.setInput1B("00000000000000000000000000000000");
         modelPacket0515.setInput2B("00000000000000000000000000000000");
@@ -168,6 +168,8 @@ public class SetUnitInfo {
         modelPacket0517.setLength(length.LENGTH_0014);
         modelPacket0517.setStatus("0000");
         modelPacket0517.setDenominationCode("FFFFFF00000000000000000000000000");
+//        modelPacket0517.setDenominationCode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+//        modelPacket0517.setDenominationCode("00003F00000000000000000000000000");
 
 //        modelPacket0529.setPacketId(packet.PKT_0529);
         modelPacket0529.setPacketId("0729");

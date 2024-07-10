@@ -2,9 +2,11 @@ package com.hpy.crmdriver.ui.theme.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -14,8 +16,11 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,9 +42,13 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket008E;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
 import com.hpy.crmdriver.ui.theme.util.AppConfig;
 import com.hpy.crmdriver.ui.theme.util.AppLogs;
+import com.hpy.crmdriver.ui.theme.util.ApplicationData;
 import com.hpy.crmdriver.ui.theme.util.Click;
 import com.hpy.crmdriver.ui.theme.util.DeviceDetails;
+import com.hpy.crmdriver.ui.theme.util.FileAccess;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
+import com.hpy.crmdriver.ui.theme.util.StorageType;
+import com.hpy.crmdriver.ui.theme.util.ValueConvertor;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -104,6 +114,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
     private ToggleButton btnToggle;
 
     private AppConfig appConfig = new AppConfig();
+    private StorageType storageType = new StorageType();
 
     private static final int REQUEST_PERMISSION_CODE = 101;
 
@@ -186,6 +197,8 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
         checkForExistingDevices();
         clickListeners();
+
+        checkStoragePermission();
 
     }
 
@@ -407,7 +420,10 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Click.preventTwoClick(v);
-                programDownloadSendData(btnProgramDownloadSendData);
+                if (checkStoragePermission()) {
+//                    checkProgramDownloadFileData();
+//                    testProgramSendDownload();
+                }
             }
         });
 
@@ -451,52 +467,6 @@ public class DriverCommunicationActivity extends AppCompatActivity {
             }
         });
 
-//        checkProgramDownloadFileData("C:/Rahul/HPY-20240702/ZXR60INT000003");
-
-    }
-
-    private void checkProgramDownloadFileData(String folderPath) {
-        // Replace with the actual path of your file
-
-        String file_ZXR60 = folderPath + "/ZXR60";
-        String file_ZXR60INT = folderPath + "/ZXR60INT.pdl";
-
-        File file = new File(file_ZXR60);
-        long fileSizeInBytes = file.length(); // Get the file size in bytes
-        long fileSizeInKB = fileSizeInBytes / 1024; // Convert to KB
-        long fileSizeInMB = fileSizeInKB / 1024; // Convert to MB
-
-        //TODO - File Size
-        String fileSize = "File Size: " + fileSizeInBytes + " bytes (" + fileSizeInKB + " KB / " + fileSizeInMB + " MB)";
-        AppLogs.generateTAG("ProgramDownload", fileSize);
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(file_ZXR60INT));
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line).append("\n");
-            }
-            reader.close();
-
-            //TODO - File Content
-            String fileContent = stringBuilder.toString();
-            AppLogs.generateTAG("ProgramDownload", fileContent);
-
-        } catch (IOException e) {
-            AppLogs.generateTAG("ProgramDownload", "Exp : " + e.getMessage());
-        }
-    }
-
-    private void checkPermission() {
-        // Check if we have permission to read external storage
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_PERMISSION_CODE);
-        }
     }
 
     private void setExceptionData() {
@@ -509,7 +479,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
         if (model0081 != null) {
 //            txtExceptionData.setText("MODEL 0081 : " + model0081.getPacketId() + model0081.getLength() + model0081.getResponseCode());
-            txtExceptionData.setText("MODEL 0081 CODE : " + model0081.getResponseCode());
+            txtExceptionData.setText("0081 CODE : " + model0081.getResponseCode());
         }
 
         if (model008E != null) {
@@ -518,14 +488,14 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 //                    model008E.getReserved() + model008E.getErrorCassette() + model008E.getUnitStatus()
 //                    + model008E.getRecoveryCode() + model008E.getPositionCode());
             txtExceptionData.setText(txtExceptionData.getText().toString() + "  |  " +
-                    "MODEL 008E CODE : " + model008E.getErrorCode());
+                    "008E CODE : " + model008E.getErrorCode());
         }
     }
 
 
     private void getStatus(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isGetStatus(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -533,7 +503,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void prepareTransaction(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isPrepareTransaction(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -542,7 +512,8 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void nextTransaction(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
+            txtExceptionData.setText("");
             boolean isSuccess = commandExecutor.isPrepareNextTransaction(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -550,7 +521,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void dispense(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isDispense(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -558,7 +529,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void retract(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isRetract(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -566,7 +537,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void openShutter(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isOpenShutter(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -574,7 +545,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void cashCount(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isCashCount(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -582,7 +553,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void rollBack(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isCashRollback(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -590,7 +561,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void storeMoney(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isStoreMoney(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -598,7 +569,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void closeShutter(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isCloseShutter(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -606,7 +577,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void quickReset(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isResetQuick(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -614,7 +585,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void reboot(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isReboot(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -622,7 +593,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void firmware(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isFirmware(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -630,7 +601,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void setDenominationCode(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isSetDenominationCode(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -638,7 +609,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void setUnitInfo(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isSetUnitInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -646,7 +617,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void resetNormal(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isResetNormal(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -654,7 +625,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void getUnitInfo(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isGetUnitInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -662,7 +633,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void programDownloadStart(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isProgramDownloadStart(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -670,15 +641,16 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void programDownloadSendData(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isProgramDownloadSendData(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
     }
 
+
     private void programDownloadEnd(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isProgramDownloadEnd(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -687,7 +659,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void cancel(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isCancel(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -695,7 +667,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void getLogsData(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isLogsData(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -704,7 +676,7 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void getBankNoteInfo(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isBankNoteInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
@@ -712,10 +684,15 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
     private void getCassetteNoteInfo(Button button) {
         if (isProcessCompleted) {
-            txtCommunicationProcess.setText("");
+            clearData();
             boolean isSuccess = commandExecutor.isCassetteNoteInfo(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
             getColorCode(isSuccess, button);
         }
+    }
+
+    private void clearData() {
+        txtCommunicationProcess.setText("");
+        txtExceptionData.setText("");
     }
 
     private void clearAllView() {
@@ -887,24 +864,12 @@ public class DriverCommunicationActivity extends AppCompatActivity {
 
                 isProcessCompleted = true;
 
-//                sendCommandData();
-
             }
 
         }
 
     }
 
-    private boolean setDeviceAddress() {
-        boolean returnValue = false;
-        int length = usbConnection.controlTransfer(0x00, 0x05, 0x0001,
-                0x0000, null, 0x0000, TIMEOUT_10);
-        if (length > 0) {
-            checkLogs("Address Set Successfully");
-            returnValue = true;
-        }
-        return returnValue;
-    }
 
     @Override
     protected void onDestroy() {
@@ -924,6 +889,350 @@ public class DriverCommunicationActivity extends AppCompatActivity {
         Log.e(TAG, value);
         builder.append(value + "\n\n");
         txtCommunicationProcess.setText(builder.toString());
+    }
+
+
+    //TODO - Permission Check
+    private boolean checkStoragePermission() {
+        boolean isGranted = false;
+        String[] permissions = null;
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
+            permissions = new String[]{
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_IMAGES
+            };
+        } else {
+            permissions = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+        }
+
+        // Check if all permissions are granted
+        boolean allPermissionsGranted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
+            }
+        }
+
+        if (!allPermissionsGranted) {
+            showPermissionExplanationDialog(permissions);
+        } else {
+            isGranted = true;
+        }
+
+        return isGranted;
+    }
+
+    private void showPermissionExplanationDialog(String[] permissions) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permission Needed")
+                .setMessage("This permission is needed to access files on your device.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Optionally, handle 'Cancel' button action
+                    }
+                })
+                .show();
+    }
+
+
+    private void showPermissionDeniedDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permission Denied")
+                .setMessage("Without this permission, the app cannot function properly. Please grant the permission in app settings.")
+                .setPositiveButton("Go to Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Open app settings
+                        openAppSettings();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Optionally, handle 'Cancel' button action
+                    }
+                })
+                .show();
+    }
+
+    private void openAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CODE: // Replace with your request code
+                // Check if all permissions are granted
+                boolean allPermissionsGranted = true;
+                for (int result : grantResults) {
+                    if (result != PackageManager.PERMISSION_GRANTED) {
+                        allPermissionsGranted = false;
+                        break;
+                    }
+                }
+
+                if (!allPermissionsGranted) {
+                    showPermissionDeniedDialog();
+                }
+
+                break;
+        }
+    }
+
+    public void checkProgramDownloadFileData() {
+
+        String folderPath = getStoragePath(storageType.External_Storage_Directory);
+        String filePath = folderPath + "/HPY-20240702/ZXR60INT000003";
+
+        String file_ZXR60 = filePath + "/ZXR60.INI";
+        String file_ZXR60INT = filePath + "/ZXR60INT.pdl";
+
+        //TODO - Check control id
+        String controlID = getControlVersion(file_ZXR60);
+        ApplicationData.control_ID = controlID;
+        AppLogs.generate("Control_ID : " + ApplicationData.control_ID);
+        if (!TextUtils.isEmpty(controlID)) {
+            //TODO - Check pdl data
+            String pdlContent = readPDLFile(file_ZXR60INT);
+            if (!TextUtils.isEmpty(pdlContent)) {
+                String pdlBinaryString = convertToBinary(pdlContent).replaceAll(" ", "");
+                AppLogs.generate("PDL_BinaryString : " + pdlBinaryString);
+                AppLogs.generate("PDL_BinaryString_Length : " + pdlBinaryString.length());
+                sendProgramDownloadData(pdlBinaryString, pdlBinaryString.length());
+            } else {
+                AppLogs.generate("No data found for PDL");
+            }
+        } else {
+            AppLogs.generate("No data found for Control ID");
+        }
+
+    }
+
+
+    ValueConvertor valueConvertor = new ValueConvertor();
+
+    public void sendProgramDownloadData(String pdlBinaryString, long length) {
+
+        int numberSize = 7168;
+        numberSize = numberSize * 2;
+        long limit = length;
+        long lastValue = 0;
+
+        int startIndex = 0;
+
+        for (int multiplier = 1; ; multiplier++) {
+            long result = (long) numberSize * multiplier;
+
+            String writingAddress = "";
+            ApplicationData.writing_address = "";
+
+            // Check if the result is greater than or equal to the limit
+            if (result < limit) {
+//                AppLogs.generateTAG("AppLogs", "ProgramData " + "Result " + result);
+                lastValue = result;
+                if (multiplier == 1) {
+                    writingAddress = "0000" + "0000" + valueConvertor.decimalToHexString8(numberSize);
+//                    AppLogs.generateTAG("AppLogs", "ProgramData - " + multiplier + " " + writingAddress);
+                } else {
+                    writingAddress = "0001" + "0000" + valueConvertor.decimalToHexString8(numberSize);
+//                    AppLogs.generateTAG("AppLogs", "ProgramData - " + multiplier + " " + writingAddress);
+                }
+
+                ApplicationData.writing_address = writingAddress;
+
+                //TODO - Read here byte*8binary for pdl size data
+                if (startIndex < pdlBinaryString.length()) {
+//                    int endIndex = Math.min(startIndex + numberSize*8, pdlBinaryString.length());
+                    int endIndex = Math.min(startIndex + numberSize, pdlBinaryString.length());
+                    String groupPDL = pdlBinaryString.substring(startIndex, endIndex);
+                    startIndex += numberSize;
+                    ApplicationData.pdl_data = groupPDL;
+//                    AppLogs.generateTAG("AppLogs", "ProgramData " + "PDL_Group " + groupPDL);
+                }
+
+                //TODO- Send program download command
+                sendProgramDownloadCommand();
+
+            } else if (result > limit) {
+                ApplicationData.writing_address = "";
+                long finalValue = limit - lastValue;
+                int finalNumber = (int) finalValue;
+                writingAddress = "FFFF" + "0000" + valueConvertor.decimalToHexString8(finalValue);
+                ApplicationData.writing_address = writingAddress;
+//                AppLogs.generateTAG("AppLogs", "ProgramData - " + multiplier + " " + writingAddress);
+//                AppLogs.generateTAG("AppLogs", "ProgramData " + "Final " + finalValue);
+
+                if (startIndex < pdlBinaryString.length()) {
+//                    int endIndex = Math.min(startIndex + finalNumber*8, pdlBinaryString.length());
+                    int endIndex = Math.min(startIndex + finalNumber, pdlBinaryString.length());
+                    String groupPDL = pdlBinaryString.substring(startIndex, endIndex);
+                    ApplicationData.pdl_data = groupPDL;
+//                    AppLogs.generateTAG("AppLogs", "ProgramData " + "PDL_Group " + groupPDL);
+                }
+
+                //TODO- Send program download command
+                sendProgramDownloadCommand();
+
+                break;
+            }
+
+
+        }
+
+    }
+
+
+    public void testProgramSendDownload() {
+        //00000000
+        String writingAddress = "0000" + "0000" + "00000000";
+        ApplicationData.writing_address = writingAddress;
+//        String groupPDL = "00101110 00000000 01011010 01011000"; (Binary To HEX)
+        String groupPDL = "2E005A58";
+        ApplicationData.pdl_data = groupPDL;
+        boolean isSuccess = sendProgramDownloadCommand();
+        if (isSuccess) {
+            AppLogs.generate("SUCCESS SENS PROGRAM 1");
+            testProgramSendDownload2();
+        } else {
+            AppLogs.generate("NO SUCCESS SENS PROGRAM 1");
+        }
+    }
+
+    public void testProgramSendDownload2() {
+        //00000000
+        String writingAddress = "0001" + "0000" + "00000010";
+        ApplicationData.writing_address = writingAddress;
+//        String groupPDL = "01010010001101100011000001001001";
+        String groupPDL = "52363049";
+        ApplicationData.pdl_data = groupPDL;
+        boolean isSuccess = sendProgramDownloadCommand();
+        if (isSuccess) {
+            AppLogs.generate("SUCCESS SENS PROGRAM 2");
+        } else {
+            AppLogs.generate("NO SUCCESS SENS PROGRAM 2");
+        }
+    }
+
+    public boolean sendProgramDownloadCommand() {
+        clearData();
+        boolean isSuccess = commandExecutor.isProgramDownloadSendData(activity, usbConnection, endpointOne, endpointTwo, endpointThree, txtCommunicationProcess);
+        return isSuccess;
+    }
+
+    private static String readPDLFile(String filePath) {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+        return content.toString();
+    }
+
+    private static String convertToBinary(String pdlContent) {
+        StringBuilder binaryString = new StringBuilder();
+        for (char c : pdlContent.toCharArray()) {
+            String binary = String.format("%8s", Integer.toBinaryString(c)).replace(' ', '0');
+            binaryString.append(binary).append(" ");
+        }
+        return binaryString.toString();
+    }
+
+    public String getControlVersion(String filePath) {
+        String ctlIdValue = "";
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            reader.close();
+
+            //TODO - File Content
+            String fileContent = stringBuilder.toString();
+            Log.e("TAG", "ProgramDownload_ZXR60_Data " + fileContent);
+            String ctlIdLine = findCtlIdLine(fileContent);
+            if (ctlIdLine != null) {
+                ctlIdValue = extractCtlIdValue(ctlIdLine);
+                if (ctlIdValue == null) {
+                    AppLogs.generate("Unable to extract CTL_ID value.");
+                }
+            } else {
+                AppLogs.generate("CTL_ID line not found.");
+            }
+
+        } catch (IOException e) {
+            AppLogs.generate("ProgramDownload_Exp : " + e.getMessage());
+        }
+
+        return ctlIdValue;
+    }
+
+    public String getPDLBinaryData(String fileData) {
+        String returnValue = "";
+
+        return returnValue;
+    }
+
+    private static String findCtlIdLine(String firmwareString) {
+        String[] lines = firmwareString.split("\n");
+        for (String line : lines) {
+            if (line.startsWith("CTL_ID")) {
+                return line;
+            }
+        }
+        return null;
+    }
+
+    private static String extractCtlIdValue(String ctlIdLine) {
+        int index = ctlIdLine.indexOf('=');
+        if (index != -1) {
+            String valueString = ctlIdLine.substring(index + 1).trim();
+            // Check if the value starts with "0x" and remove it
+            if (valueString.startsWith("0x")) {
+                valueString = valueString.substring(2); // Remove "0x"
+            }
+            return valueString;
+        }
+        return null;
+    }
+
+    private String getStoragePath(String type) {
+        String storagePath = "";
+        if (type.equals(storageType.External_Storage_Directory)) {
+            File externalStorageDirectory = Environment.getExternalStorageDirectory();
+            storagePath = externalStorageDirectory.getAbsolutePath();
+        } else if (type.equals(storageType.External_Storage_Public_Directory)) {
+            File publicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            storagePath = publicDirectory.getAbsolutePath();
+        } else if (type.equals(storageType.Internal_Storage_Directory)) {
+            File filesDir = getFilesDir();
+            storagePath = filesDir.getAbsolutePath();
+        }
+        return storagePath;
     }
 
 }

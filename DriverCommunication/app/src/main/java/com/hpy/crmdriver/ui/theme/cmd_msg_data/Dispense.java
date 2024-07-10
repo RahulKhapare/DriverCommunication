@@ -171,19 +171,19 @@ public class Dispense {
 
         modelPacket0540.setRoomNo_1("2A");
         modelPacket0540.setReserved_1("00");
-        modelPacket0540.setNoDispenseNote_1("0001");
+        modelPacket0540.setNoDispenseNote_1("0003");
 
         modelPacket0540.setRoomNo_2("3A");
         modelPacket0540.setReserved_2("00");
-        modelPacket0540.setNoDispenseNote_2("0001");
+        modelPacket0540.setNoDispenseNote_2("0002");
 
         modelPacket0540.setRoomNo_3("4A");
         modelPacket0540.setReserved_3("00");
-        modelPacket0540.setNoDispenseNote_3("0001");
+        modelPacket0540.setNoDispenseNote_3("0003");
 
-        modelPacket0540.setRoomNo_4("5A");
+        modelPacket0540.setRoomNo_4("00");
         modelPacket0540.setReserved_4("00");
-        modelPacket0540.setNoDispenseNote_4("0001");
+        modelPacket0540.setNoDispenseNote_4("0000");
 
         modelPacket0540.setRoomNo_5("00");
         modelPacket0540.setReserved_5("00");

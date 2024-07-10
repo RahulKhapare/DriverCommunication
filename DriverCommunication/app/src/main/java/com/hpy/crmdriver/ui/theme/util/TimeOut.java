@@ -10,6 +10,7 @@ public class TimeOut {
     public int TIMEOUT_5 = 5000;
     public int TIMEOUT_10 = 10000;
     public int TIMEOUT_20 = 20000;
+    public int TIMEOUT_30 = 30000;
     public int TIMEOUT_120 = 120000;
     public int TIMEOUT_180 = 180000;
     public int TIMEOUT_210 = 210000;

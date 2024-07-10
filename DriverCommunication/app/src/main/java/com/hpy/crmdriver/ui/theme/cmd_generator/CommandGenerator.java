@@ -58,9 +58,10 @@ public class CommandGenerator {
     public SessionModel sessionModel = new SessionModel();
 
     public TimeOut timeOut = new TimeOut();
-
+    public AppLogs appLogs = new AppLogs();
     public boolean generate(Context context, UsbDeviceConnection usbConnection, UsbEndpoint endpointOne, UsbEndpoint endpointTwo, String commandType, TextView textView) {
         clearData();
+        ;
         stringBuilder = new StringBuilder();
         boolean isSuccess = false;
         String message = "";
@@ -76,11 +77,11 @@ public class CommandGenerator {
 
         message = "\n\n**** Start " + commandType + " Command ****";
         appendText(message, textView);
-        AppLogs.generate(message);
+        appLogs.writeGenerateLogs(message);
         isSuccess = getInputCommandValue(true, context, usbConnection, endpointOne, endpointTwo, commandType, textView);
         message = "**** End " + commandType + " Command ****\n\n";
         appendText(message, textView);
-        AppLogs.generate(message);
+        appLogs.writeGenerateLogs(message);
         return isSuccess;
     }
 
@@ -164,7 +165,7 @@ public class CommandGenerator {
                         int size = 4;
                         for (int j = 0; j < size; j++) {
 
-                            AppLogs.generate("ResponseReceiveRequestCount : " + responseReceiveRequestCount);
+//                            AppLogs.generate("ResponseReceiveRequestCount : " + responseReceiveRequestCount);
                             if (responseReceiveRequestCount <= 3) {
 
                                 //TODO - Check interrupt status (before fire command)
@@ -204,8 +205,8 @@ public class CommandGenerator {
                                         responseCode = cmdSupportClass.get3rdHexValue(responseReceivedConformation);
                                         responseReceiveConfirmationCount = responseReceiveConfirmationCount + 1;
 
-                                        AppLogs.generate("ResponseReceiveConfirmationCount : " + responseReceiveConfirmationCount);
-                                        AppLogs.generate("ResponseReceiveConfirmationCode : " + responseCode);
+//                                        AppLogs.generate("ResponseReceiveConfirmationCount : " + responseReceiveConfirmationCount);
+//                                        AppLogs.generate("ResponseReceiveConfirmationCode : " + responseCode);
 
                                         if (!TextUtils.isEmpty(responseCode) && responseCode.equalsIgnoreCase(cmdErrorCode.CODE_00)) {
                                             returnValue = getResponse(receivedBulInRequest);
@@ -525,6 +526,8 @@ public class CommandGenerator {
     public void errorSleep(String commandType) {
         if (commandType.equals(commandFormatType.RESET)) {
             threadSleep(timeOut.TIMEOUT_20);
+        } else if (commandType.equals(commandFormatType.PROGRAM_DOWNLOAD)) {
+            threadSleep(timeOut.TIMEOUT_30);
         } else {
             threadSleep(timeOut.TIMEOUT_5);
         }

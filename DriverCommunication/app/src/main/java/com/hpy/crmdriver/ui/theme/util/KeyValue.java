@@ -8,4 +8,5 @@ public class KeyValue {
     public static String RES_RECEIVING_REQ = "RES_RECEIVING_REQ";
     public static String RES_RECEIVING_CONF = "RES_RECEIVING_CONF";
     public static String INTERRUPT_DATA = "INTERRUPT_DATA";
+    public static String CONTROL_ID = "CONTROL_ID";
 }

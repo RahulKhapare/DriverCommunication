@@ -16,9 +16,11 @@ import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket008E;
 import com.hpy.crmdriver.ui.theme.packet_model.ModelPacket0581;
 import com.hpy.crmdriver.ui.theme.session.SessionModel;
 import com.hpy.crmdriver.ui.theme.util.AppConfig;
-import com.hpy.crmdriver.ui.theme.util.AppLogs;
+import com.hpy.crmdriver.ui.theme.util.ApplicationData;
+import com.hpy.crmdriver.ui.theme.util.KeyValue;
 import com.hpy.crmdriver.ui.theme.util.SessionData;
 import com.hpy.crmdriver.ui.theme.util.StringHelper;
+import com.hpy.crmdriver.ui.theme.util.ValueConvertor;
 
 public class ProgramDownload {
 
@@ -31,11 +33,10 @@ public class ProgramDownload {
     public CommandData commandData = new CommandData();
     public MessageDataLengthGenerator messageDataLengthGenerator = new MessageDataLengthGenerator();
     public Size size = new Size();
+    public ValueConvertor valueConvertor = new ValueConvertor();
     private SessionModel sessionModel = new SessionModel();
+    private SessionData sessionData = new SessionData();
     private AppConfig appConfig = new AppConfig();
-
-    private int number = 7168;
-    private int limit = 2452540;
 
 
     public String generateCommand(Context context) {
@@ -51,17 +52,22 @@ public class ProgramDownload {
         } else if (cmdType.equals(appConfig.PROGRAM_DOWNLOAD_SEND_DATA)) {
             modelPacket0001.setCommand("0302");
 
+//            String controlId = ApplicationData.control_ID;
+            String controlId = "0595";
+            String writingAddress = ApplicationData.writing_address;
             modelPacket0005.setPacketId(packet.PKT_0005);
             modelPacket0005.setLength(length.LENGTH_000C);
-            modelPacket0005.setControlId("0595");
-//            modelPacket0005.setPdlBlockType("");
-//            modelPacket0005.setReserved("");
-//            modelPacket0005.setWritingAddress("");
-            modelPacket0005.setProgramData(getProgramData(number, limit));
+            modelPacket0005.setControlId(controlId);
+//            modelPacket0005.setPdlBlockType("");//added below
+//            modelPacket0005.setReserved("");//added below
+            modelPacket0005.setWritingAddress(writingAddress);
 
+            String pdlData = ApplicationData.pdl_data;
+            int pdlLength = (pdlData.length() / 2) + 2;
             modelPacket0006.setPacketId(packet.PKT_0006);
-//            modelPacket0006.setLength("");
-            modelPacket0006.setPdlData(getPDLData(number, limit));
+            //modelPacket0006.setLength(valueConvertor.decimalToHexString(pdlLength));
+            modelPacket0006.setLength("0006");
+            modelPacket0006.setPdlData(pdlData);
 
             returnValue = modelPacket0001.generatePacket() + modelPacket0005.generatePacket() + modelPacket0006.generatePacket();
 
@@ -129,7 +135,7 @@ public class ProgramDownload {
         return returnValue;
     }
 
-    private String getProgramData(long number, long limit) {
+    private String getWritingAddress(long number, long limit) {
         String returnValue = "";
         long lessValue = 0;
         long maxValue = 0;
@@ -164,13 +170,13 @@ public class ProgramDownload {
                 lessValue = result;
                 long length = lessValue + 2;
                 returnValue = returnValue + length + lessValue;
-//                AppLogs.generateTAG("ProgramData - ", length + " " + lessValue);
+//                AppLogs.generateTAG("PDLData - ", length + " " + lessValue);
             } else if (result > limit) {
                 maxValue = result;
                 long finalValue = maxValue - lessValue;
                 long length = finalValue + 2;
                 returnValue = returnValue + length + finalValue;
-//                AppLogs.generateTAG("ProgramData - ", length + " " + finalValue);
+//                AppLogs.generateTAG("PDLData - ", length + " " + finalValue);
                 break;
             }
         }
